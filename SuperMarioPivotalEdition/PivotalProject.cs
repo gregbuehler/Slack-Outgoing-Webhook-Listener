@@ -1,0 +1,6 @@
+﻿namespace SuperMarioPivotalEdition
+{
+    class PivotalProject
+    {
+    }
+}

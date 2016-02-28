@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SuperMarioPivotalEdition
 {
 
-    public class Story
+    public class PivotalStory
     {
         public string kind { get; set; }
         public int id { get; set; }

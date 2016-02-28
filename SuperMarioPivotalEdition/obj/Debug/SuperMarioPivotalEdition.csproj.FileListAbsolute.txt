@@ -14,3 +14,4 @@ C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\bin\D
 C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.csprojResolveAssemblyReference.cache
+C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\SuperMarioPivotalEdition.exe.config
