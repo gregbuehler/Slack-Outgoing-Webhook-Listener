@@ -46,7 +46,9 @@ namespace SuperMarioPivotalEdition
                 new JProperty("tasks", new JArray()));
             Post($"/services/v5/projects/{projectId}/stories", json);
         }
-
+        // Might want to pass in ChannelInfo objects instead of strings and List<strings>
+        // since that already contains the info. Herein lies the road
+        // to ruination.
 
     }
 }

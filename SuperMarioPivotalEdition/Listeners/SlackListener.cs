@@ -59,19 +59,21 @@ namespace SuperMarioPivotalEdition
             {
                 case "add pivotal":
                     var storyDescription = formText.Split(':')[1];
-                    var projectId = channelInfo.PivotalProjectId;
-                    pivotalClient.PostStory(projectId, storyDescription);
+                    pivotalClient.PostStory(channelInfo.PivotalProjectId, storyDescription);
                     // Figure out if we want to add default team tasks later.
                     break;
                 case "taskify":
                     var storyId = formText.Split(':')[1];
                     var defaultTasks = channelInfo.DefaultTaskDescriptions;
-                    pivotalClient.PostTasks(storyId, defaultTasks);
+                    pivotalClient.PostTasks(channelInfo.PivotalProjectId, storyId, defaultTasks);
                     break;
                 case "help":
                     response = "*add pivotal:Giant Beetle* creates a new Pivotal issue with name \"Giant Beetle\" using our team's default Pivotal template.";
                     break;
                 case "check release tags":
+
+                    break;
+                case "update google calendar":
 
                     break;
             }
