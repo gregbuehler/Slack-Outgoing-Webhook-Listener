@@ -50,5 +50,9 @@ namespace SuperMarioPivotalEdition
         // since that already contains the info. Herein lies the road
         // to ruination.
 
+        public void CheckReleaseTags(string projectId)
+        {
+            
+        }
     }
 }
