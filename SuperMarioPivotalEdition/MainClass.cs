@@ -4,9 +4,9 @@ namespace SuperMarioPivotalEdition
 {
     class MainClass
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            var slackListener = new SlackListener(new DatabaseClient("Mario"), new PivotalClient(), new GoogleCalendarClient());
+            var slackListener = new SlackListener(new DatabaseClient("Mario"));
             slackListener.ListenForSlackOutgoingWebhooks();
             Console.ReadLine();
         }

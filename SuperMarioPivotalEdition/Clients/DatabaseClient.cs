@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.ModelBinding;
+﻿using System.Linq;
+using Raven.Client.Document;
 
 namespace SuperMarioPivotalEdition
 {
@@ -31,20 +26,11 @@ namespace SuperMarioPivotalEdition
             }
         }
 
-        public string GetProjectIdFromChannelName(string slackChannelName)
+        public SlackChannelInfo GetChannelInfoFromChannelName(string slackChannelName)
         {
             using (var session = _documentStore.OpenSession())
             {
-                var projectId = session.Query<ChannelInfo>().Where(x => x.SlackChannelName = slackChannelName).Select(x => x.PivotalProjectId).First();
-                return projectId;
-            }
-        }
-
-        public ChannelInfo GetChannelInfoFromChannelName(string slackChannelName)
-        {
-            using (var session = _documentStore.OpenSession())
-            {
-                var channelInfo = session.Query<ChannelInfo>().Where(x => x.SlackChannelName = slackChannelName).First();
+                var channelInfo = session.Query<SlackChannelInfo>().First(x => x.SlackChannelName == slackChannelName);
                 return channelInfo;
             }
         }

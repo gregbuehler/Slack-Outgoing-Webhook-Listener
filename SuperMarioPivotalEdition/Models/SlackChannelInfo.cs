@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SuperMarioPivotalEdition
 {
-    class ChannelInfo
+    class SlackChannelInfo
     {
-        public string ChannelName;
+        public string SlackChannelName;
         public string PivotalProjectId;
+        public string PivotalApiKey;
         public List<string> DefaultTaskDescriptions;
 
-        public ChannelInfo(string channelName, string pivotalProjectId, List<string> defaultTaskDescriptions)
+        public SlackChannelInfo(string slackChannelName, string pivotalProjectId, string pivotalApiKey, List<string> defaultTaskDescriptions)
         {
-            ChannelName = channelName;
+            SlackChannelName = slackChannelName;
             PivotalProjectId = pivotalProjectId;
+            PivotalApiKey = pivotalApiKey;
             DefaultTaskDescriptions = defaultTaskDescriptions;
         }
     }

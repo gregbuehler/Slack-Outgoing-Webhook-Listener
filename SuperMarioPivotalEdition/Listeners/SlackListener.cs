@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
@@ -19,20 +14,24 @@ namespace SuperMarioPivotalEdition
         private PivotalClient _pivotalClient;
         private GoogleCalendarClient _googleCalendarClient;
 
-        public SlackListener(DatabaseClient databaseClient, PivotalClient pivotalClient, GoogleCalendarClient googleCalendarClient)
+        public SlackListener(DatabaseClient databaseClient)
         {
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add("http://pareidoliaiscreated.org:1338/");
             _httpListener.Start();
-            _pivotalClient = pivotalClient;
-            _googleCalendarClient = googleCalendarClient;
+            _databaseClient = databaseClient;
+            _pivotalClient = new PivotalClient(_databaseClient);
+            _googleCalendarClient = new GoogleCalendarClient();
         }
 
         public async void ListenForSlackOutgoingWebhooks()
         {
             while (true)
             {
+                Console.WriteLine("LISTENING");
+
                 var context = await _httpListener.GetContextAsync();
+                Console.WriteLine("GOT A HIT");
                 NameValueCollection form;
                 using (var reader = new StreamReader(context.Request.InputStream))
                 {
@@ -59,13 +58,13 @@ namespace SuperMarioPivotalEdition
             {
                 case "add pivotal":
                     var storyDescription = formText.Split(':')[1];
-                    pivotalClient.PostStory(channelInfo.PivotalProjectId, storyDescription);
+                    pivotalClient.PostStory(channelInfo, storyDescription);
                     // Figure out if we want to add default team tasks later.
                     break;
-                case "taskify":
+                case "add tasks":
                     var storyId = formText.Split(':')[1];
                     var defaultTasks = channelInfo.DefaultTaskDescriptions;
-                    pivotalClient.PostTasks(channelInfo.PivotalProjectId, storyId, defaultTasks);
+                    pivotalClient.PostTasks(channelInfo, storyId, defaultTasks);
                     break;
                 case "help":
                     response = "*add pivotal:Giant Beetle* creates a new Pivotal issue with name \"Giant Beetle\" using our team's default Pivotal template.";
