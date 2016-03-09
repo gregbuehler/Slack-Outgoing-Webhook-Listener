@@ -92,14 +92,14 @@ namespace SuperMarioPivotalEdition
                     _databaseClient.WriteToDatabase(channelInfo);
                     response = $"Pivotal project ID set to {projectId}.";
                     break;
-                case "set pivotal api key":
+                case "set api key":
                     var apiKey = formText.Split(':')[1];
                     channelInfo.PivotalApiKey = apiKey;
                     _databaseClient.WriteToDatabase(channelInfo);
                     response = $"API Key set to {apiKey}.";
                     break;
-                case "display info":
-                    response = channelInfo.ToString();
+                case "info":
+                    response = $"```{channelInfo}```";
                     break;
                 case "help":
                     response = @"_All commands are case-insensitive_:
@@ -109,8 +109,8 @@ namespace SuperMarioPivotalEdition
 *add default task:Check exhaust ports* adds a new task to your team's default tasks.
 *clear default tasks* clears default task list.
 *set project id:123* sets this Slack channel's associated Pivotal Project ID to 123.
-*set pivotal api key:a1b2c3* sets the Pivotal API Key to a1b2c3.
-*display info* displays this Slack channel's associated Pivotal info.";
+*set api key:a1b2c3* sets the Pivotal API Key to a1b2c3.
+*info* displays this Slack channel's associated Pivotal info.";
                     break;
                 case "check release tags":
 

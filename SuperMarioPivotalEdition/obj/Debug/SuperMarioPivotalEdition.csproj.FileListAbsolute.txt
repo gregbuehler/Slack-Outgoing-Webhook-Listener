@@ -38,6 +38,5 @@ C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEditio
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Abstractions.xml
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Client.Lightweight.pdb
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Client.Lightweight.xml
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.csprojResolveAssemblyReference.cache
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.exe
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.pdb
