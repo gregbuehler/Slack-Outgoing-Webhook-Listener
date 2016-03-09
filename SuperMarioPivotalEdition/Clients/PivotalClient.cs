@@ -31,7 +31,7 @@ namespace SuperMarioPivotalEdition
         public void PostTask(SlackChannelInfo slackChannelInfo, string storyId, string taskDescription)
         {
             var json = new JObject(new JProperty("description", taskDescription));
-            Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/{storyId}/tasks", json, slackChannelInfo.PivotalApiKey);
+            Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories/{storyId}/tasks", json, slackChannelInfo.PivotalApiKey);
         }
 
         public void PostTasks(SlackChannelInfo slackChannelInfo, string storyId, List<string> taskDescriptions)
@@ -48,9 +48,6 @@ namespace SuperMarioPivotalEdition
                 new JProperty("tasks", new JArray()));
             Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories", json, slackChannelInfo.PivotalApiKey);
         }
-        // Might want to pass in SlackChannelInfo objects instead of strings and List<strings>
-        // since that already contains the info. Herein lies the road
-        // to ruination.
 
         public void CheckReleaseTags(string projectId)
         {

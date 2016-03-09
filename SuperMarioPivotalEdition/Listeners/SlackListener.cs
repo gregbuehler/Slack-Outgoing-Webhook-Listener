@@ -51,7 +51,7 @@ namespace SuperMarioPivotalEdition
             var triggerWord = form["trigger_word"].ToLower();
             var slackName = form["user_name"];
             var formText = form["text"];
-            var channel = form["channel LOOK THIS UP TO MAKE SURE"];
+            var channel = form["channel_name"];
             var channelInfo = _databaseClient.GetChannelInfoFromChannelName(channel);
             string response = "";
             switch (triggerWord)

@@ -9,6 +9,7 @@ namespace SuperMarioPivotalEdition
             var slackListener = new SlackListener(new DatabaseClient("Mario"));
             slackListener.ListenForSlackOutgoingWebhooks();
             Console.ReadLine();
+
         }
     }
 }

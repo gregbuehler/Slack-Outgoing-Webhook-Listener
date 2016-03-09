@@ -16,5 +16,10 @@ namespace SuperMarioPivotalEdition
             PivotalApiKey = pivotalApiKey;
             DefaultTaskDescriptions = defaultTaskDescriptions;
         }
+
+        public SlackChannelInfo()
+        {
+            
+        }
     }
 }

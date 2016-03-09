@@ -30,7 +30,7 @@ namespace SuperMarioPivotalEdition
         {
             using (var session = _documentStore.OpenSession())
             {
-                var channelInfo = session.Query<SlackChannelInfo>().First(x => x.SlackChannelName == slackChannelName);
+                var channelInfo = session.Query<SlackChannelInfo>().FirstOrDefault(x => x.SlackChannelName == slackChannelName);
                 return channelInfo;
             }
         }
