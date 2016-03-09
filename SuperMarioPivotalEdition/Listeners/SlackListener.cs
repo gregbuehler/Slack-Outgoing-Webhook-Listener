@@ -1,10 +1,9 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace SuperMarioPivotalEdition
@@ -80,12 +79,38 @@ namespace SuperMarioPivotalEdition
                     var taskDescription = formText.Split(':')[1];
                     channelInfo.DefaultTaskDescriptions.Add(taskDescription);
                     _databaseClient.WriteToDatabase(channelInfo);
+                    response = "New default task added.";
+                    break;
+                case "clear default tasks":
+                    channelInfo.DefaultTaskDescriptions = new List<string>();
+                    _databaseClient.WriteToDatabase(channelInfo);
+                    response = "Default task list cleared.";
+                    break;
+                case "set project id":
+                    var projectId = formText.Split(':')[1];
+                    channelInfo.PivotalProjectId = projectId;
+                    _databaseClient.WriteToDatabase(channelInfo);
+                    response = $"Pivotal project ID set to {projectId}.";
+                    break;
+                case "set pivotal api key":
+                    var apiKey = formText.Split(':')[1];
+                    channelInfo.PivotalApiKey = apiKey;
+                    _databaseClient.WriteToDatabase(channelInfo);
+                    response = $"API Key set to {apiKey}.";
+                    break;
+                case "display info":
+                    response = channelInfo.ToString();
                     break;
                 case "help":
-                    response = @"Command info:
-*add pivotal:Giant Beetle* creates a new Pivotal issue with name ""Giant Beetle"" and adds default tasks.
+                    response = @"_All commands are case-insensitive_:
+*help* displays command help.
+*add pivotal:Giant Beetle* creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
 *add tasks:12345* adds default tasks to story ID 12345.
-*add default task:Check exhaust ports* adds a new task to your team's default tasks.";
+*add default task:Check exhaust ports* adds a new task to your team's default tasks.
+*clear default tasks* clears default task list.
+*set project id:123* sets this Slack channel's associated Pivotal Project ID to 123.
+*set pivotal api key:a1b2c3* sets the Pivotal API Key to a1b2c3.
+*display info* displays this Slack channel's associated Pivotal info.";
                     break;
                 case "check release tags":
 

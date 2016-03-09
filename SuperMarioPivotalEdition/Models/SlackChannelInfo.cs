@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace SuperMarioPivotalEdition
 {
@@ -20,6 +21,11 @@ namespace SuperMarioPivotalEdition
         public SlackChannelInfo()
         {
             
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
     }
 }
