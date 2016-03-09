@@ -108,9 +108,9 @@ namespace SuperMarioPivotalEdition
 *add tasks:12345* adds default tasks to story ID 12345.
 *add default task:Check exhaust ports* adds a new task to your team's default tasks.
 *clear default tasks* clears default task list.
-*set project id:123* sets this Slack channel's associated Pivotal Project ID to 123.
-*set api key:a1b2c3* sets the Pivotal API Key to a1b2c3.
-*info* displays this Slack channel's associated Pivotal info.";
+*set project id:123* sets this channel's associated Pivotal Project ID to 123.
+*set api key:a1b2c3* sets this channel's Pivotal API Key to a1b2c3.
+*info* displays this channel's associated Pivotal info.";
                     break;
                 case "check release tags":
 
