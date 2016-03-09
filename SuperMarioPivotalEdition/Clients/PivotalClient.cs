@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -10,43 +11,42 @@ namespace SuperMarioPivotalEdition
     class PivotalClient
     {
         static HttpClient client = new HttpClient { BaseAddress = new Uri("https://www.pivotaltracker.com") };
-        private DatabaseClient _databaseClient;
 
-        public PivotalClient(DatabaseClient databaseClient)
-        {
-            _databaseClient = databaseClient;
-        }
-
-        public void Post(string resourceUri, JObject json, string apiKey)
+        public HttpResponseMessage Post(string resourceUri, JObject json, string apiKey)
         {
             var content = new StringContent(json.ToString());
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             content.Headers.Add("X-TrackerToken", apiKey);
             var response = client.PostAsync(resourceUri, content).Result;
             Thread.Sleep(1000);
-            var pivotalResponse = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine($"Posted to Pivotal:\nResource: {resourceUri}\nPayload: {json}, Pivotal Response: {pivotalResponse}");
+            var pivotalResponse = response;
+            Console.WriteLine($"Posted to Pivotal:\nResource: {resourceUri}\nPayload: {json},\nPivotal Response: {pivotalResponse.Content.ReadAsStringAsync().Result}");
+            return pivotalResponse;
         }
 
-        public void PostTask(SlackChannelInfo slackChannelInfo, string storyId, string taskDescription)
+        public HttpResponseMessage PostTask(SlackChannelInfo slackChannelInfo, string storyId, string taskDescription)
         {
             var json = new JObject(new JProperty("description", taskDescription));
-            Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories/{storyId}/tasks", json, slackChannelInfo.PivotalApiKey);
+            return Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories/{storyId}/tasks", json, slackChannelInfo.PivotalApiKey);
         }
 
-        public void PostTasks(SlackChannelInfo slackChannelInfo, string storyId, List<string> taskDescriptions)
+        public List<HttpResponseMessage> PostDefaultTasks(SlackChannelInfo slackChannelInfo, string storyId)
         {
-            foreach (var taskDescription in taskDescriptions)
+            var responses = slackChannelInfo.DefaultTaskDescriptions.Select(taskDescription => PostTask(slackChannelInfo, storyId, taskDescription));
+            return responses.ToList();
+        }
+
+        public HttpResponseMessage PostStory(SlackChannelInfo slackChannelInfo, string storyName)
+        {
+            var tasks = new JArray();
+            foreach (var defaultTaskDescription in slackChannelInfo.DefaultTaskDescriptions)
             {
-                PostTask(slackChannelInfo, storyId, taskDescription);
+                tasks.Add(new JProperty("description", defaultTaskDescription));
             }
-        }
-
-        public void PostStory(SlackChannelInfo slackChannelInfo, string storyName)
-        {
-            var json = new JObject(new JProperty("name", storyName),
-                new JProperty("tasks", new JArray()));
-            Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories", json, slackChannelInfo.PivotalApiKey);
+            var json = new JObject(
+                new JProperty("name", storyName),
+                new JProperty("tasks", tasks));
+            return Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories", json, slackChannelInfo.PivotalApiKey);
         }
 
         public void CheckReleaseTags(string projectId)

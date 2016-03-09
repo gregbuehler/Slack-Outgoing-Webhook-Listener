@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Raven.Client.Document;
+using System.Collections.Generic;
 
 namespace SuperMarioPivotalEdition
 {
@@ -17,11 +18,11 @@ namespace SuperMarioPivotalEdition
             _documentStore.Initialize();
         }
 
-        public void WriteToDatabase(object obj)
+        public void WriteToDatabase(SlackChannelInfo slackChannelInfo)
         {
             using (var session = _documentStore.OpenSession())
             {
-                session.Store(obj);
+                session.Store(slackChannelInfo, slackChannelInfo.SlackChannelName);
                 session.SaveChanges();
             }
         }
@@ -31,6 +32,11 @@ namespace SuperMarioPivotalEdition
             using (var session = _documentStore.OpenSession())
             {
                 var channelInfo = session.Query<SlackChannelInfo>().FirstOrDefault(x => x.SlackChannelName == slackChannelName);
+                if (!(channelInfo != null))
+                {
+                    channelInfo = new SlackChannelInfo(slackChannelName, "", "", new List<string>());
+                    WriteToDatabase(channelInfo);
+                }
                 return channelInfo;
             }
         }
