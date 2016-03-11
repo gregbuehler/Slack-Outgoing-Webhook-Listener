@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -34,7 +35,9 @@ namespace SuperMarioPivotalEdition
                 NameValueCollection form;
                 using (var reader = new StreamReader(context.Request.InputStream))
                 {
-                    form = HttpUtility.ParseQueryString(reader.ReadToEnd());
+                    var queryString = reader.ReadToEnd();
+                    Console.WriteLine($"Slack request received. Contents:\n\n{queryString}\n\n");
+                    form = HttpUtility.ParseQueryString(queryString);
                 }
                 var responseBody = ProcessSlackCommand(form);
                 using (var writer = new StreamWriter(context.Response.OutputStream))
