@@ -10,14 +10,20 @@ namespace SuperMarioPivotalEdition
 {
     class PivotalClient
     {
-        static HttpClient client = new HttpClient { BaseAddress = new Uri("https://www.pivotaltracker.com") };
+        private HttpClient _client = new HttpClient { BaseAddress = new Uri("https://www.pivotaltracker.com") };
+        private string _apiKey;
 
-        public HttpResponseMessage Post(string resourceUri, JObject json, string apiKey)
+        public PivotalClient(string apiKey)
+        {
+            _apiKey = apiKey;
+        }
+
+        public HttpResponseMessage Post(string resourceUri, JObject json)
         {
             var content = new StringContent(json.ToString());
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            content.Headers.Add("X-TrackerToken", apiKey);
-            var response = client.PostAsync(resourceUri, content).Result;
+            content.Headers.Add("X-TrackerToken", _apiKey);
+            var response = _client.PostAsync(resourceUri, content).Result;
             Thread.Sleep(1000);
             var pivotalResponse = response;
             Console.WriteLine($"Posted to Pivotal:\nResource: {resourceUri}\nPayload: {json},\nPivotal Response: {pivotalResponse.Content.ReadAsStringAsync().Result}");
@@ -27,7 +33,7 @@ namespace SuperMarioPivotalEdition
         public HttpResponseMessage PostTask(SlackChannelInfo slackChannelInfo, string storyId, string taskDescription)
         {
             var json = new JObject(new JProperty("description", taskDescription));
-            return Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories/{storyId}/tasks", json, slackChannelInfo.PivotalApiKey);
+            return Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories/{storyId}/tasks", json);
         }
 
         public List<HttpResponseMessage> PostDefaultTasks(SlackChannelInfo slackChannelInfo, string storyId)
@@ -46,7 +52,7 @@ namespace SuperMarioPivotalEdition
             var json = new JObject(
                 new JProperty("name", storyName),
                 new JProperty("tasks", tasks));
-            return Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories", json, slackChannelInfo.PivotalApiKey);
+            return Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories", json);
         }
 
         public void CheckReleaseTags(string projectId)

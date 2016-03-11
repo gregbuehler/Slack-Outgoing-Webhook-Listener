@@ -34,7 +34,7 @@ namespace SuperMarioPivotalEdition
                 var channelInfo = session.Query<SlackChannelInfo>().FirstOrDefault(x => x.SlackChannelName == slackChannelName);
                 if (!(channelInfo != null))
                 {
-                    channelInfo = new SlackChannelInfo(slackChannelName, "", "", new List<string>());
+                    channelInfo = new SlackChannelInfo(slackChannelName, "", new List<string>());
                     WriteToDatabase(channelInfo);
                 }
                 return channelInfo;

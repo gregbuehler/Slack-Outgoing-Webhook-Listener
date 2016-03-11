@@ -13,16 +13,17 @@ namespace SuperMarioPivotalEdition
         HttpListener _httpListener;
         private DatabaseClient _databaseClient;
         private PivotalClient _pivotalClient;
-        private GoogleCalendarClient _googleCalendarClient;
+        private string _slackOutgoingWebhookToken;
 
-        public SlackListener(DatabaseClient databaseClient)
+        public SlackListener(DatabaseClient databaseClient, string pivotalApiKey, string slackOutgoingWebhookToken, string serverAddress)
         {
-            _httpListener = new HttpListener();
-            _httpListener.Prefixes.Add("http://pareidoliaiscreated.org:1338/");
-            _httpListener.Start();
             _databaseClient = databaseClient;
-            _pivotalClient = new PivotalClient();
-            _googleCalendarClient = new GoogleCalendarClient();
+            _pivotalClient = new PivotalClient(pivotalApiKey);
+            _slackOutgoingWebhookToken = slackOutgoingWebhookToken;
+            _httpListener = new HttpListener();
+            _httpListener.Prefixes.Add(serverAddress);
+            _httpListener.Start();
+
         }
 
         public async void ListenForSlackOutgoingWebhooks()
@@ -47,11 +48,12 @@ namespace SuperMarioPivotalEdition
         private string ProcessSlackCommand(NameValueCollection form)
         {
             var triggerWord = form["trigger_word"].ToLower();
-            var slackName = form["user_name"];
             var formText = form["text"];
             var channel = form["channel_name"];
             var channelInfo = _databaseClient.GetChannelInfoFromChannelName(channel);
-            string response = "";
+            var token = form["token"];
+            var response = "";
+            if (token != _slackOutgoingWebhookToken) return response;
             switch (triggerWord)
             {
                 case "add pivotal":
@@ -92,31 +94,18 @@ namespace SuperMarioPivotalEdition
                     _databaseClient.WriteToDatabase(channelInfo);
                     response = $"Pivotal project ID set to {projectId}.";
                     break;
-                case "set api key":
-                    var apiKey = formText.Split(':')[1];
-                    channelInfo.PivotalApiKey = apiKey;
-                    _databaseClient.WriteToDatabase(channelInfo);
-                    response = $"API Key set to {apiKey}.";
-                    break;
                 case "info":
                     response = $"```{channelInfo}```";
                     break;
                 case "help":
                     response = @"_All commands are case-insensitive_:
-*help* displays command help.
-*add pivotal:Giant Beetle* creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
-*add tasks:12345* adds default tasks to story ID 12345.
-*add default task:Check exhaust ports* adds a new task to your team's default tasks.
-*clear default tasks* clears default task list.
-*set project id:123* sets this channel's associated Pivotal Project ID to 123.
-*set api key:a1b2c3* sets this channel's Pivotal API Key to a1b2c3.
-*info* displays this channel's associated Pivotal info.";
-                    break;
-                case "check release tags":
-
-                    break;
-                case "update google calendar":
-
+*help* - Displays command help.
+*info* - Displays this channel's associated Pivotal info.
+*set project id:123* - Sets this channel's associated Pivotal Project ID to 123.
+*add tasks:12345* - Adds default tasks to story ID 12345.
+*add pivotal:Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
+*add default task:Check exhaust ports* - Adds a new task to your team's default tasks.
+*clear default tasks* - Clears default task list.";
                     break;
             }
             return response;

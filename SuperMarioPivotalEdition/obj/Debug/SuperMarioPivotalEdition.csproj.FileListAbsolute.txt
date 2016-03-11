@@ -40,3 +40,4 @@ C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEditio
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Client.Lightweight.xml
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.exe
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.pdb
+C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.csprojResolveAssemblyReference.cache
