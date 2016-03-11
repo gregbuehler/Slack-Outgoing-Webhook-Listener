@@ -39,7 +39,15 @@ namespace SuperMarioPivotalEdition
                     Console.WriteLine($"Slack request received. Contents:\n\n{queryString}\n\n");
                     form = HttpUtility.ParseQueryString(queryString);
                 }
-                var responseBody = ProcessSlackCommand(form);
+                string responseBody;
+                try
+                {
+                    responseBody = ProcessSlackCommand(form);
+                }
+                catch (Exception)
+                {
+                    responseBody = "SCREAMS OF DEATH";
+                }
                 using (var writer = new StreamWriter(context.Response.OutputStream))
                 {
                     var json = new JObject(new JProperty("text", responseBody)).ToString();
@@ -51,7 +59,8 @@ namespace SuperMarioPivotalEdition
         private string ProcessSlackCommand(NameValueCollection form)
         {
             var triggerWord = form["trigger_word"].ToLower();
-            var formText = form["text"];
+            var splitFormText = form["text"].Split(new[] {':'}, 2);
+            var formTextContent = splitFormText.Length == 2 ? splitFormText[1] : "";
             var channel = form["channel_name"];
             var channelInfo = _databaseClient.GetChannelInfoFromChannelName(channel);
             var token = form["token"];
@@ -59,8 +68,8 @@ namespace SuperMarioPivotalEdition
             if (token != _slackOutgoingWebhookToken) return response;
             switch (triggerWord)
             {
-                case "add pivotal":
-                    var storyTitle = formText.Split(':')[1];
+                case "add story":
+                    var storyTitle = formTextContent;
                     var httpResponseMessage = _pivotalClient.PostStory(channelInfo, storyTitle);
                     if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                     {
@@ -74,14 +83,14 @@ namespace SuperMarioPivotalEdition
                     }
                     break;
                 case "add tasks":
-                    var storyId = formText.Split(':')[1];
+                    var storyId = formTextContent;
                     var httpResponseMessages = _pivotalClient.PostDefaultTasks(channelInfo, storyId);
                     var success = httpResponseMessages.Aggregate(true,
                         (b, message) => b && message.StatusCode == HttpStatusCode.OK);
                     response = success ? "Default tasks added." : "Error adding tasks";
                     break;
                 case "add default task":
-                    var taskDescription = formText.Split(':')[1];
+                    var taskDescription = formTextContent;
                     channelInfo.DefaultTaskDescriptions.Add(taskDescription);
                     _databaseClient.WriteToDatabase(channelInfo);
                     response = "New default task added.";
@@ -92,10 +101,18 @@ namespace SuperMarioPivotalEdition
                     response = "Default task list cleared.";
                     break;
                 case "set project id":
-                    var projectId = formText.Split(':')[1];
+                    var projectId = formTextContent;
                     channelInfo.PivotalProjectId = projectId;
                     _databaseClient.WriteToDatabase(channelInfo);
                     response = $"Pivotal project ID set to {projectId}.";
+                    break;
+                case "set default tasks from json":
+                    var json = formTextContent;
+                    var jarray = JArray.Parse(json);
+                    var taskList = jarray.ToObject<List<string>>();
+                    channelInfo.DefaultTaskDescriptions = taskList;
+                    _databaseClient.WriteToDatabase(channelInfo);
+                    response = $"Default tasks set to:```{jarray}```";
                     break;
                 case "info":
                     response = $"```{channelInfo}```";
@@ -106,9 +123,10 @@ namespace SuperMarioPivotalEdition
 *info* - Displays this channel's associated Pivotal info.
 *set project id:123* - Sets this channel's associated Pivotal Project ID to 123.
 *add tasks:12345* - Adds default tasks to story ID 12345.
-*add pivotal:Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
+*add story:Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
 *add default task:Check exhaust ports* - Adds a new task to your team's default tasks.
-*clear default tasks* - Clears default task list.";
+*clear default tasks* - Clears default task list.
+*set default tasks from json:*`[""task1"", ""task2""]` - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.";
                     break;
             }
             return response;

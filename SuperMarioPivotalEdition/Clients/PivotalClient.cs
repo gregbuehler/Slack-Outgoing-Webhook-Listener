@@ -47,7 +47,7 @@ namespace SuperMarioPivotalEdition
             var tasks = new JArray();
             foreach (var defaultTaskDescription in slackChannelInfo.DefaultTaskDescriptions)
             {
-                tasks.Add(new JProperty("description", defaultTaskDescription));
+                tasks.Add(new JObject(new JProperty("description", defaultTaskDescription)));
             }
             var json = new JObject(
                 new JProperty("name", storyName),
