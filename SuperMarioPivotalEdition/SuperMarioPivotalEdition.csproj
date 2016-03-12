@@ -57,6 +57,7 @@
     <Compile Include="Clients\DatabaseClient.cs" />
     <Compile Include="Clients\PivotalClient.cs" />
     <Compile Include="MainClass.cs" />
+    <Compile Include="Models\PivotalClientResponse.cs" />
     <Compile Include="Models\SlackChannelInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Listeners\SlackListener.cs" />

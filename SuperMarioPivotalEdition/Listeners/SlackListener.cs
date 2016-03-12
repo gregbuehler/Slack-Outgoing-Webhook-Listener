@@ -24,7 +24,6 @@ namespace SuperMarioPivotalEdition
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(serverAddress);
             _httpListener.Start();
-
         }
 
         public async void ListenForSlackOutgoingWebhooks()
@@ -69,29 +68,14 @@ namespace SuperMarioPivotalEdition
             switch (triggerWord)
             {
                 case "add story":
-                    var storyTitle = formTextContent;
-                    var httpResponseMessage = _pivotalClient.PostStory(channelInfo, storyTitle);
-                    if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                    {
-                        dynamic dHttpResponse = JObject.Parse(httpResponseMessage.Content.ReadAsStringAsync().Result);
-                        var url = dHttpResponse.url;
-                        response = $"Story created at {url}";
-                    }
-                    else
-                    {
-                        response = "Error creating story.";
-                    }
+                    response = _pivotalClient.PostStory(channelInfo, formTextContent).ShortResponseMessage;
                     break;
                 case "add tasks":
-                    var storyId = formTextContent;
-                    var httpResponseMessages = _pivotalClient.PostDefaultTasks(channelInfo, storyId);
-                    var success = httpResponseMessages.Aggregate(true,
-                        (b, message) => b && message.StatusCode == HttpStatusCode.OK);
-                    response = success ? "Default tasks added." : "Error adding tasks";
+                    var allSucceeded = _pivotalClient.PostDefaultTasks(channelInfo, formTextContent).Aggregate(true, (b, resp) => b && resp.IsSuccessful);
+                    response = allSucceeded ? "Default tasks added." : "Error adding tasks.";
                     break;
                 case "add default task":
-                    var taskDescription = formTextContent;
-                    channelInfo.DefaultTaskDescriptions.Add(taskDescription);
+                    channelInfo.DefaultTaskDescriptions.Add(formTextContent);
                     _databaseClient.WriteToDatabase(channelInfo);
                     response = "New default task added.";
                     break;
@@ -101,14 +85,12 @@ namespace SuperMarioPivotalEdition
                     response = "Default task list cleared.";
                     break;
                 case "set project id":
-                    var projectId = formTextContent;
-                    channelInfo.PivotalProjectId = projectId;
+                    channelInfo.PivotalProjectId = formTextContent;
                     _databaseClient.WriteToDatabase(channelInfo);
-                    response = $"Pivotal project ID set to {projectId}.";
+                    response = $"Pivotal project ID set to {formTextContent}.";
                     break;
                 case "set default tasks from json":
-                    var json = formTextContent;
-                    var jarray = JArray.Parse(json);
+                    var jarray = JArray.Parse(formTextContent);
                     var taskList = jarray.ToObject<List<string>>();
                     channelInfo.DefaultTaskDescriptions = taskList;
                     _databaseClient.WriteToDatabase(channelInfo);
@@ -131,6 +113,5 @@ namespace SuperMarioPivotalEdition
             }
             return response;
         }
-
     }
 }
