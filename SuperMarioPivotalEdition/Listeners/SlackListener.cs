@@ -71,7 +71,7 @@ namespace SuperMarioPivotalEdition
                     response = _pivotalClient.PostStory(channelInfo, formTextContent).ShortResponseMessage;
                     break;
                 case "add tasks":
-                    var allSucceeded = _pivotalClient.PostDefaultTasks(channelInfo, formTextContent).Aggregate(true, (b, resp) => b && resp.IsSuccessful);
+                    var allSucceeded = _pivotalClient.PostDefaultTasks(channelInfo, formTextContent.Trim(' ', '#')).Aggregate(true, (b, resp) => b && resp.IsSuccessful);
                     response = allSucceeded ? "Default tasks added." : "Error adding tasks.";
                     break;
                 case "add default task":
