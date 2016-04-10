@@ -17,14 +17,16 @@ namespace SuperMarioPivotalEdition
         private PivotalClient _pivotalClient;
         private FractalClient _fractalClient;
         private BitlyClient _bitlyClient;
+        private CatApiClient _catApiClient;
         private string _slackOutgoingWebhookToken;
 
-        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey)
+        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey)
         {
             _databaseClient = databaseClient;
             _pivotalClient = new PivotalClient(pivotalApiKey);
             _fractalClient = new FractalClient();
             _bitlyClient = new BitlyClient(bitlyApiKey);
+            _catApiClient = new CatApiClient(catApiKey);
             _slackOutgoingWebhookToken = slackOutgoingWebhookToken;
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(serverAddress);
@@ -104,11 +106,17 @@ namespace SuperMarioPivotalEdition
                 case "random fractal":
                     response = _bitlyClient.ShortenUrl(_fractalClient.RandomFractal());
                     break;
+                case "cat bomb":
+                    var numCats = int.Parse(formTextContent.Trim());
+                    var catRes = _catApiClient.GetCats(numCats);
+                    response = catRes.data.images.Aggregate("", (s, image) => s + _bitlyClient.ShortenUrl(image.url) + "\n").Trim();
+                    break;
                 case "info":
                     response = $"```{channelInfo}```";
                     break;
                 case "help":
                     response = @"_All commands are case-insensitive_:
+**Pivotal commands**:
 *help* - Displays command help.
 *info* - Displays this channel's associated Pivotal info.
 *set project id:123* - Sets this channel's associated Pivotal Project ID to 123.
@@ -116,7 +124,11 @@ namespace SuperMarioPivotalEdition
 *add story:Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
 *add default task:Check exhaust ports* - Adds a new task to your team's default tasks.
 *clear default tasks* - Clears default task list.
-*set default tasks from json:*`[""task1"", ""task2""]` - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.";
+*set default tasks from json:*`[""task1"", ""task2""]` - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.
+
+**Random commands**
+*random fractal* - Posts a random root-finder fractal.
+*cat bomb:2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.";
                     break;
             }
             return response;
