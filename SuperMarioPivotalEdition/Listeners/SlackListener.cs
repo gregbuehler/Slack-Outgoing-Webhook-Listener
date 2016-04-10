@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using Newtonsoft.Json.Linq;
+using SuperMarioPivotalEdition.Clients;
 
 namespace SuperMarioPivotalEdition
 {
@@ -14,12 +15,16 @@ namespace SuperMarioPivotalEdition
         HttpListener _httpListener;
         private DatabaseClient _databaseClient;
         private PivotalClient _pivotalClient;
+        private FractalClient _fractalClient;
+        private BitlyClient _bitlyClient;
         private string _slackOutgoingWebhookToken;
 
-        public SlackListener(DatabaseClient databaseClient, string pivotalApiKey, string slackOutgoingWebhookToken, string serverAddress)
+        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey)
         {
             _databaseClient = databaseClient;
             _pivotalClient = new PivotalClient(pivotalApiKey);
+            _fractalClient = new FractalClient();
+            _bitlyClient = new BitlyClient(bitlyApiKey);
             _slackOutgoingWebhookToken = slackOutgoingWebhookToken;
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(serverAddress);
@@ -95,6 +100,9 @@ namespace SuperMarioPivotalEdition
                     channelInfo.DefaultTaskDescriptions = taskList;
                     _databaseClient.WriteToDatabase(channelInfo);
                     response = $"Default tasks set to:```{jarray}```";
+                    break;
+                case "random fractal":
+                    response = _bitlyClient.ShortenUrl(_fractalClient.RandomFractal());
                     break;
                 case "info":
                     response = $"```{channelInfo}```";

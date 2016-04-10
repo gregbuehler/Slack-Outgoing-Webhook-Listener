@@ -11,11 +11,12 @@ namespace SuperMarioPivotalEdition
 {
     class PivotalClient
     {
-        private HttpClient _client = new HttpClient { BaseAddress = new Uri("https://www.pivotaltracker.com") };
+        private HttpClient _client;
         private string _apiKey;
 
         public PivotalClient(string apiKey)
         {
+            _client = new HttpClient {BaseAddress = new Uri("https://www.pivotaltracker.com")};
             _apiKey = apiKey;
         }
 

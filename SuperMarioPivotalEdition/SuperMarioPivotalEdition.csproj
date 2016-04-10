@@ -54,7 +54,9 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Clients\BitlyClient.cs" />
     <Compile Include="Clients\DatabaseClient.cs" />
+    <Compile Include="Clients\FractalClient.cs" />
     <Compile Include="Clients\PivotalClient.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="Models\PivotalClientResponse.cs" />
