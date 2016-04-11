@@ -60,10 +60,12 @@
     <Compile Include="Clients\DatabaseClient.cs" />
     <Compile Include="Clients\FractalClient.cs" />
     <Compile Include="Clients\PivotalClient.cs" />
+    <Compile Include="Clients\YouTubeClient.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="Models\CatApiResponse.cs" />
     <Compile Include="Models\PivotalClientResponse.cs" />
     <Compile Include="Models\SlackChannelInfo.cs" />
+    <Compile Include="Models\YouTubeSearchResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Listeners\SlackListener.cs" />
   </ItemGroup>

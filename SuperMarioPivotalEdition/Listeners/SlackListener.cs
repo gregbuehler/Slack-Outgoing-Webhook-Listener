@@ -18,15 +18,17 @@ namespace SuperMarioPivotalEdition
         private FractalClient _fractalClient;
         private BitlyClient _bitlyClient;
         private CatApiClient _catApiClient;
+        private YouTubeClient _youTubeClient;
         private string _slackOutgoingWebhookToken;
 
-        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey)
+        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey, string youTubeApiKey)
         {
             _databaseClient = databaseClient;
             _pivotalClient = new PivotalClient(pivotalApiKey);
             _fractalClient = new FractalClient();
             _bitlyClient = new BitlyClient(bitlyApiKey);
             _catApiClient = new CatApiClient(catApiKey);
+            _youTubeClient = new YouTubeClient(youTubeApiKey);
             _slackOutgoingWebhookToken = slackOutgoingWebhookToken;
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(serverAddress);
@@ -111,6 +113,9 @@ namespace SuperMarioPivotalEdition
                     var catRes = _catApiClient.GetCats(numCats);
                     response = catRes.data.images.Aggregate("", (s, image) => s + _bitlyClient.ShortenUrl(image.url) + "\n").Trim();
                     break;
+                case "youtube":
+                    response = _youTubeClient.SearchForRandom(formTextContent);
+                    break;
                 case "info":
                     response = $"```{channelInfo}```";
                     break;
@@ -128,7 +133,8 @@ namespace SuperMarioPivotalEdition
 
 **Random commands**
 *random fractal* - Posts a random root-finder fractal.
-*cat bomb:2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.";
+*cat bomb:2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.
+*youtube:cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.";
                     break;
             }
             return response;
