@@ -59,10 +59,14 @@
     <Compile Include="Clients\CatApiClient.cs" />
     <Compile Include="Clients\DatabaseClient.cs" />
     <Compile Include="Clients\FractalClient.cs" />
+    <Compile Include="Clients\GoogleVisionClient.cs" />
+    <Compile Include="Clients\ImgurClient.cs" />
     <Compile Include="Clients\PivotalClient.cs" />
     <Compile Include="Clients\YouTubeClient.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="Models\CatApiResponse.cs" />
+    <Compile Include="Models\GoogleVisionResponse.cs" />
+    <Compile Include="Models\ImgurResponse.cs" />
     <Compile Include="Models\PivotalClientResponse.cs" />
     <Compile Include="Models\SlackChannelInfo.cs" />
     <Compile Include="Models\YouTubeSearchResponse.cs" />

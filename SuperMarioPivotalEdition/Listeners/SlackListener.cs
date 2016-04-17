@@ -18,17 +18,21 @@ namespace SuperMarioPivotalEdition
         private FractalClient _fractalClient;
         private BitlyClient _bitlyClient;
         private CatApiClient _catApiClient;
+        private ImgurClient _imgurClient;
         private YouTubeClient _youTubeClient;
+        private GoogleVisionClient _googleVisionClient;
         private string _slackOutgoingWebhookToken;
 
-        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey, string youTubeApiKey)
+        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey, string imgurApiKey, string googleApiKey)
         {
             _databaseClient = databaseClient;
             _pivotalClient = new PivotalClient(pivotalApiKey);
             _fractalClient = new FractalClient();
             _bitlyClient = new BitlyClient(bitlyApiKey);
             _catApiClient = new CatApiClient(catApiKey);
-            _youTubeClient = new YouTubeClient(youTubeApiKey);
+            _imgurClient = new ImgurClient(imgurApiKey);
+            _youTubeClient = new YouTubeClient(googleApiKey);
+            _googleVisionClient = new GoogleVisionClient(googleApiKey);
             _slackOutgoingWebhookToken = slackOutgoingWebhookToken;
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(serverAddress);
@@ -52,9 +56,10 @@ namespace SuperMarioPivotalEdition
                 {
                     responseBody = ProcessSlackCommand(form);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     responseBody = "SCREAMS OF DEATH";
+                    Console.WriteLine(ex.ToString());
                 }
                 using (var writer = new StreamWriter(context.Response.OutputStream))
                 {
@@ -76,6 +81,26 @@ namespace SuperMarioPivotalEdition
             if (token != _slackOutgoingWebhookToken) return response;
             switch (triggerWord)
             {
+                case "help":
+                    response = @"_All commands are case-insensitive_:
+**Pivotal commands**:
+*help* - Displays command help.
+*info* - Displays this channel's associated Pivotal info.
+*set project id:123* - Sets this channel's associated Pivotal Project ID to 123.
+*add tasks:12345* - Adds default tasks to story ID 12345.
+*add story:Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
+*add default task:Check exhaust ports* - Adds a new task to your team's default tasks.
+*clear default tasks* - Clears default task list.
+*set default tasks from json:*`[""task1"", ""task2""]` - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.
+
+**Random commands**
+*random fractal* - Posts a random root-finder fractal.
+*cat bomb:2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.
+*youtube:cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.";
+                    break;
+                case "info":
+                    response = $"```{channelInfo}```";
+                    break;
                 case "add story":
                     response = _pivotalClient.PostStory(channelInfo, formTextContent).ShortResponseMessage;
                     break;
@@ -116,25 +141,12 @@ namespace SuperMarioPivotalEdition
                 case "youtube":
                     response = _youTubeClient.SearchForRandom(formTextContent);
                     break;
-                case "info":
-                    response = $"```{channelInfo}```";
+                case "imgur":
+                    response = _bitlyClient.ShortenUrl(_imgurClient.SearchForRandom(formTextContent));
                     break;
-                case "help":
-                    response = @"_All commands are case-insensitive_:
-**Pivotal commands**:
-*help* - Displays command help.
-*info* - Displays this channel's associated Pivotal info.
-*set project id:123* - Sets this channel's associated Pivotal Project ID to 123.
-*add tasks:12345* - Adds default tasks to story ID 12345.
-*add story:Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
-*add default task:Check exhaust ports* - Adds a new task to your team's default tasks.
-*clear default tasks* - Clears default task list.
-*set default tasks from json:*`[""task1"", ""task2""]` - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.
-
-**Random commands**
-*random fractal* - Posts a random root-finder fractal.
-*cat bomb:2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.
-*youtube:cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.";
+                case "google vision":
+                    var gvr = _googleVisionClient.Annotate(formTextContent.Trim().Trim('<', '>')); // Slack puts brackets around URLs which are sent back in outgoing webhooks, so need to trim those out.
+                    response = $"```{gvr}```";
                     break;
             }
             return response;

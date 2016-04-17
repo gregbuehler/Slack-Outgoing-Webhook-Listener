@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using SuperMarioPivotalEdition.Clients;
 
 namespace SuperMarioPivotalEdition
 {
@@ -13,8 +11,9 @@ namespace SuperMarioPivotalEdition
             var pivotalApiKey = args[2];
             var bitlyApiKey = args[3];
             var catApiKey = args[4];
-            var youTubeApiKey = args[5];
-            var slackListener = new SlackListener(new DatabaseClient("Mario"), serverAddress, slackToken, pivotalApiKey, bitlyApiKey, catApiKey, youTubeApiKey);
+            var imgurApiKey = args[5];
+            var googleApiKey = args[6];
+            var slackListener = new SlackListener(new DatabaseClient("Mario"), serverAddress, slackToken, pivotalApiKey, bitlyApiKey, catApiKey, imgurApiKey, googleApiKey);
             slackListener.ListenForSlackOutgoingWebhooks();
             Console.ReadLine();
         }
