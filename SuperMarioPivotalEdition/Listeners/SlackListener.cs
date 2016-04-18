@@ -96,7 +96,9 @@ namespace SuperMarioPivotalEdition
 **Random commands**
 *random fractal* - Posts a random root-finder fractal.
 *cat bomb:2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.
-*youtube:cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.";
+*youtube:cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.
+*imgur:catnip* - Searches Imgur for ""catnip"" and returns a random image from the top 50-ish results.
+*google vision:[URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.";
                     break;
                 case "info":
                     response = $"```{channelInfo}```";
