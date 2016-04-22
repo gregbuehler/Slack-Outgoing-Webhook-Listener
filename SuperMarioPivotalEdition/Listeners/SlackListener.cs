@@ -147,8 +147,8 @@ namespace SuperMarioPivotalEdition
                     response = _bitlyClient.ShortenUrl(_imgurClient.SearchForRandom(formTextContent));
                     break;
                 case "google vision":
-                    var gvr = _googleVisionClient.Annotate(formTextContent.Trim().Trim('<', '>')); // Slack puts brackets around URLs which are sent back in outgoing webhooks, so need to trim those out.
-                    response = $"```{gvr}```";
+                    var barchart = _googleVisionClient.AnnotateAndReturnUrlOfBarchart(formTextContent.Trim().Trim('<', '>')); // Slack puts brackets around URLs which are sent back in outgoing webhooks, so need to trim those out.
+                    response = _bitlyClient.ShortenUrl(barchart);
                     break;
             }
             return response;

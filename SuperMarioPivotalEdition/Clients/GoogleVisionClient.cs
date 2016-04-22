@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SuperMarioPivotalEdition.Models;
@@ -21,9 +23,9 @@ namespace SuperMarioPivotalEdition.Clients
             _apiKey = apiKey;
         }
 
-        public string Annotate(string url)
+        public GoogleVisionResponse Annotate(string imageUrl)
         {
-            var imageStream = _genericClient.GetStreamAsync(url).Result;
+            var imageStream = _genericClient.GetStreamAsync(imageUrl).Result;
             string base64ImageData;
             using (var memoryStream = new MemoryStream())
             {
@@ -35,9 +37,18 @@ namespace SuperMarioPivotalEdition.Clients
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             var resp = _client.PostAsync($"/v1/images:annotate?key={_apiKey}", content).Result;
             var respStr = resp.Content.ReadAsStringAsync().Result;
-            return respStr;
+            var gvr = JsonConvert.DeserializeObject<GoogleVisionResponse>(respStr);
+            return gvr;
         }
 
-        
+        public string AnnotateAndReturnUrlOfBarchart(string imageUrl)
+        {
+            var gvr = Annotate(imageUrl);
+            var values = gvr.responses[0].labelAnnotations.Select(d => d.score).ToList();
+            var labels = gvr.responses[0].labelAnnotations.Select(d => d.description).ToList();
+            var valuesUrlString = values.Aggregate("", (s, d) => s + (100 * d).ToString("F1") + ",").Trim(',');
+            var labelsUrlString = HttpUtility.UrlEncode(labels.Aggregate("", (s, s1) => s + s1 + "|").Trim('|'));
+            return $"https://chart.googleapis.com/chart?cht=bhs&chs=500x300&chd=t:{valuesUrlString}&chxt=x,y&chxl=1:|{labelsUrlString}";
+        }
     }
 }
