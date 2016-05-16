@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SuperMarioPivotalEdition.Models;
 
@@ -24,7 +21,7 @@ namespace SuperMarioPivotalEdition.Clients
 
         public YouTubeSearchResponse SearchFor(string searchTerms)
         {
-            var str =_client.GetStringAsync($"/youtube/v3/search?part=snippet&maxResults=10&type=video&q={searchTerms}&key={_apiKey}").Result;
+            var str =_client.GetStringAsync($"/youtube/v3/search?part=snippet&maxResults=10&type=video&safeSearch=strict&key={_apiKey}&q={searchTerms}").Result;
             var resp = JsonConvert.DeserializeObject<YouTubeSearchResponse>(str);
             return resp;
         }
