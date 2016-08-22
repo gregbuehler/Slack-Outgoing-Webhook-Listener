@@ -48,7 +48,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Net.Http" />
@@ -62,6 +61,7 @@
     <Compile Include="Clients\GoogleVisionClient.cs" />
     <Compile Include="Clients\ImgurClient.cs" />
     <Compile Include="Clients\PivotalClient.cs" />
+    <Compile Include="Clients\TextBeltClient.cs" />
     <Compile Include="Clients\YouTubeClient.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="Models\CatApiResponse.cs" />

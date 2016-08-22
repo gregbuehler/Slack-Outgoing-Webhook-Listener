@@ -21,6 +21,7 @@ namespace SuperMarioPivotalEdition
         private ImgurClient _imgurClient;
         private YouTubeClient _youTubeClient;
         private GoogleVisionClient _googleVisionClient;
+        private TextBeltClient _textBeltClient;
         private string _slackOutgoingWebhookToken;
 
         public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey, string imgurApiKey, string googleApiKey)
@@ -33,6 +34,7 @@ namespace SuperMarioPivotalEdition
             _imgurClient = new ImgurClient(imgurApiKey);
             _youTubeClient = new YouTubeClient(googleApiKey);
             _googleVisionClient = new GoogleVisionClient(googleApiKey);
+            _textBeltClient = new TextBeltClient();
             _slackOutgoingWebhookToken = slackOutgoingWebhookToken;
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(serverAddress);
@@ -72,8 +74,7 @@ namespace SuperMarioPivotalEdition
         private string ProcessSlackCommand(NameValueCollection form)
         {
             var triggerWord = form["trigger_word"].ToLower();
-            var splitFormText = form["text"].Split(new[] {triggerWord}, StringSplitOptions.RemoveEmptyEntries);
-            var formTextContent = splitFormText.FirstOrDefault()?.Trim(' ', '#', ':', '<', '>');
+            var formTextContent = form["text"].Substring(triggerWord.Length).Trim(' ', '#', ':', '<', '>');
             Console.WriteLine($"formTextContent:{formTextContent}");
             var channel = form["channel_name"];
             var channelInfo = _databaseClient.GetChannelInfoFromChannelName(channel);
@@ -99,7 +100,8 @@ namespace SuperMarioPivotalEdition
 *add cats 2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.
 *youtube cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.
 *imgur catnip* - Searches Imgur for ""catnip"" and returns a random image from the top 50-ish results.
-*google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.";
+*google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.
+*send text 5033071525 ALLAHU AKBAR* - Sends a text message to the phone number with text ""ALLAHU AKBAR"".";
                     break;
                 case "info":
                     response = $"```{channelInfo}```";
@@ -150,6 +152,12 @@ namespace SuperMarioPivotalEdition
                 case "google vision":
                     var barchart = _googleVisionClient.AnnotateAndReturnUrlOfBarchart(formTextContent); // Slack puts brackets around URLs which are sent back in outgoing webhooks, so need to trim those out.
                     response = _bitlyClient.ShortenUrl(barchart);
+                    break;
+                case "send text":
+                    var temp = formTextContent?.Split(new [] {' '}, 2);
+                    var phoneNumber = temp[0].Trim();
+                    var messageText = temp[1].Trim();
+                    response = _textBeltClient.SendMessage(phoneNumber, messageText);
                     break;
             }
             return response;
