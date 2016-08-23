@@ -93,7 +93,7 @@ namespace SuperMarioPivotalEdition
 *add story Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
 *add default task Check exhaust ports* - Adds a new task to your team's default tasks.
 *clear default tasks* - Clears default task list.
-*set default tasks from json *`[""task1"", ""task2""]` - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.
+*set default tasks from json [""task1"", ""task2""]* - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.
 
 **Random commands**
 *random fractal* - Posts a random root-finder fractal.
@@ -101,7 +101,7 @@ namespace SuperMarioPivotalEdition
 *youtube cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.
 *imgur catnip* - Searches Imgur for ""catnip"" and returns a random image from the top 50-ish results.
 *google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.
-*send text 5033071525 ALLAHU AKBAR* - Sends a text message to the phone number with text ""ALLAHU AKBAR"".";
+*send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.";
                     break;
                 case "info":
                     response = $"```{channelInfo}```";
