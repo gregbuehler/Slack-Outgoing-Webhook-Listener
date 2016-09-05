@@ -39,10 +39,9 @@ namespace SuperMarioPivotalEdition.Clients
         public string SearchForAndReturnRandomTextSnippet(string text)
         {
             var gbr = SearchFor(text);
-            var htmlsnippets = gbr?.items?.Select(i => i?.searchInfo?.textSnippet).Where(t => t != null).ToList();
-            if (htmlsnippets == null) return "No results found.";
-            var randomSnippet = htmlsnippets[_random.Next(0, htmlsnippets.Count)];
-            return ConvertHtmlTextToSlackCompatibleText(randomSnippet);
+            if (gbr?.items == null || gbr.items.Length <= 0) return "No results found.";
+            var randomResult = gbr.items[_random.Next(0, gbr.items.Length)];
+            return ConvertHtmlTextToSlackCompatibleText(randomResult.ToString());
         }
 
         /// <summary>

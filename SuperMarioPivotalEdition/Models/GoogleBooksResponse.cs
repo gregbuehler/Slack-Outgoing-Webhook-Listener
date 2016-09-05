@@ -22,7 +22,7 @@
                 var title = volumeInfo?.title ?? "";
                 var subtitle = volumeInfo?.subtitle ?? "";
                 var textSnippet = searchInfo?.textSnippet ?? "";
-                return $"Title: {title}\nSubtitle: {subtitle}\nText snippet: {textSnippet}";
+                return $"*Title:* {title}\n*Subtitle:* {subtitle}\n*Text snippet:* {textSnippet}";
             }
         }
 
