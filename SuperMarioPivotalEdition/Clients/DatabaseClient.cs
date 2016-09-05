@@ -1,12 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Raven.Client.Document;
-using System.Collections.Generic;
+using SuperMarioPivotalEdition.Models;
 
-namespace SuperMarioPivotalEdition
+namespace SuperMarioPivotalEdition.Clients
 {
     class DatabaseClient
     {
-        private DocumentStore _documentStore;
+        private readonly DocumentStore _documentStore;
 
         public DatabaseClient(string databaseName)
         {

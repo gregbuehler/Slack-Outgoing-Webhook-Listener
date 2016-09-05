@@ -1,10 +1,12 @@
 ﻿using System;
+using SuperMarioPivotalEdition.Clients;
+using SuperMarioPivotalEdition.Listeners;
 
 namespace SuperMarioPivotalEdition
 {
-    class MainClass
+    internal static class MainClass
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var serverAddress = args[0];
             var slackToken = args[1];

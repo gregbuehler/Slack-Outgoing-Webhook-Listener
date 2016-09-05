@@ -7,7 +7,7 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 using SuperMarioPivotalEdition.Models;
 
-namespace SuperMarioPivotalEdition
+namespace SuperMarioPivotalEdition.Clients
 {
     class PivotalClient
     {

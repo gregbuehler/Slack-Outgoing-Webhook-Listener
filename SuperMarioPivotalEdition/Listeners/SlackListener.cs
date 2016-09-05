@@ -8,21 +8,22 @@ using System.Web;
 using Newtonsoft.Json.Linq;
 using SuperMarioPivotalEdition.Clients;
 
-namespace SuperMarioPivotalEdition
+namespace SuperMarioPivotalEdition.Listeners
 {
     class SlackListener
     {
-        HttpListener _httpListener;
-        private DatabaseClient _databaseClient;
-        private PivotalClient _pivotalClient;
-        private FractalClient _fractalClient;
-        private BitlyClient _bitlyClient;
-        private CatApiClient _catApiClient;
-        private ImgurClient _imgurClient;
-        private YouTubeClient _youTubeClient;
-        private GoogleVisionClient _googleVisionClient;
-        private TextBeltClient _textBeltClient;
-        private string _slackOutgoingWebhookToken;
+        readonly HttpListener _httpListener;
+        private readonly DatabaseClient _databaseClient;
+        private readonly PivotalClient _pivotalClient;
+        private readonly FractalClient _fractalClient;
+        private readonly BitlyClient _bitlyClient;
+        private readonly CatApiClient _catApiClient;
+        private readonly ImgurClient _imgurClient;
+        private readonly YouTubeClient _youTubeClient;
+        private readonly GoogleVisionClient _googleVisionClient;
+        private readonly GoogleBooksClient _googleBooksClient;
+        private readonly TextBeltClient _textBeltClient;
+        private readonly string _slackOutgoingWebhookToken;
 
         public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey, string imgurApiKey, string googleApiKey)
         {
@@ -34,6 +35,7 @@ namespace SuperMarioPivotalEdition
             _imgurClient = new ImgurClient(imgurApiKey);
             _youTubeClient = new YouTubeClient(googleApiKey);
             _googleVisionClient = new GoogleVisionClient(googleApiKey);
+            _googleBooksClient = new GoogleBooksClient(googleApiKey);
             _textBeltClient = new TextBeltClient();
             _slackOutgoingWebhookToken = slackOutgoingWebhookToken;
             _httpListener = new HttpListener();
@@ -100,6 +102,7 @@ namespace SuperMarioPivotalEdition
 *add cats 2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.
 *youtube cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.
 *imgur catnip* - Searches Imgur for ""catnip"" and returns a random image from the top 50-ish results.
+*google books blastoise*: Searches Google Books for a random book excerpt containing ""Blastoise"".
 *google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.
 *send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.";
                     break;
@@ -149,8 +152,11 @@ namespace SuperMarioPivotalEdition
                 case "imgur":
                     response = _bitlyClient.ShortenUrl(_imgurClient.SearchForRandom(formTextContent));
                     break;
+                case "google books":
+                    response = _googleBooksClient.SearchForAndReturnRandomTextSnippet(formTextContent);
+                    break;
                 case "google vision":
-                    var barchart = _googleVisionClient.AnnotateAndReturnUrlOfBarchart(formTextContent); // Slack puts brackets around URLs which are sent back in outgoing webhooks, so need to trim those out.
+                    var barchart = _googleVisionClient.AnnotateAndReturnUrlOfBarchart(formTextContent);
                     response = _bitlyClient.ShortenUrl(barchart);
                     break;
                 case "send text":
