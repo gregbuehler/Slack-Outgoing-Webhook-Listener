@@ -1,0 +1,18 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Create
+       [dbo].[DefaultTaskDescription] (Table)
+       [dbo].[SlackChannel] (Table)
+       [dbo].[FK_DefaultTaskDescription_ToSlackChannel] (Foreign Key)
+       [dbo].[Update_SlackChannel] (Procedure)
+
+** Supporting actions
