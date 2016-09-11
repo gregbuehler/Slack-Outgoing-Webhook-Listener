@@ -59,6 +59,7 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="Stored Procedures" />
+    <Folder Include="Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\SlackChannel.sql" />
@@ -66,6 +67,9 @@
     <Build Include="Stored Procedures\Update_DefaultTaskDescription.sql" />
     <Build Include="Stored Procedures\Delete_DefaultTaskDescription.sql" />
     <Build Include="Stored Procedures\Get_DefaultTaskDescription.sql" />
+    <Build Include="Types\GenericListOfIntegers.sql" />
+    <Build Include="Types\GenericListOfStrings.sql" />
+    <Build Include="Stored Procedures\Get_SlackChannel.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Mario.refactorlog" />
