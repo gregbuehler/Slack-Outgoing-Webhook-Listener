@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Xml.Serialization;
 using SuperMarioPivotalEdition.Models;
@@ -8,12 +9,12 @@ namespace SuperMarioPivotalEdition.Clients
 
     class CatApiClient
     {
-        private HttpClient _client = new HttpClient { BaseAddress = new Uri("http://thecatapi.com") };
-        private string _apiKey;
+        private readonly HttpClient _client = new HttpClient { BaseAddress = new Uri("http://thecatapi.com") };
+        private readonly string _apiKey;
 
-        public CatApiClient(string apiKey)
+        public CatApiClient()
         {
-            _apiKey = apiKey;
+            _apiKey = ConfigurationManager.AppSettings["CatApiKey"]; ;
         }
 
         public CatApiResponse GetCats(int n)

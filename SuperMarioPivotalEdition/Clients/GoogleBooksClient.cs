@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -16,10 +16,10 @@ namespace SuperMarioPivotalEdition.Clients
         private readonly Random _random;
         private readonly Dictionary<string, string> _htmlTagsToConvert;
 
-        public GoogleBooksClient(string apiKey)
+        public GoogleBooksClient()
         {
             _client = new HttpClient() { BaseAddress = new Uri("https://www.googleapis.com") };
-            _apiKey = apiKey;
+            _apiKey = ConfigurationManager.AppSettings["GoogleApiKey"];
             _random = new Random();
             _htmlTagsToConvert = new Dictionary<string, string>()
             {

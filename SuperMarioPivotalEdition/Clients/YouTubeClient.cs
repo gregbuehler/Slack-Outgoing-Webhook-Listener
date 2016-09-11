@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json;
@@ -8,14 +9,14 @@ namespace SuperMarioPivotalEdition.Clients
 {
     class YouTubeClient
     {
-        private HttpClient _client;
-        private string _apiKey;
-        private Random _random;
+        private readonly HttpClient _client;
+        private readonly string _apiKey;
+        private readonly Random _random;
 
-        public YouTubeClient(string apiKey)
+        public YouTubeClient()
         {
             _client = new HttpClient { BaseAddress = new Uri("https://www.googleapis.com") };
-            _apiKey = apiKey;
+            _apiKey = ConfigurationManager.AppSettings["GoogleApiKey"]; ;
             _random = new Random();
         }
 

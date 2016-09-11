@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,13 +12,13 @@ namespace SuperMarioPivotalEdition.Clients
 {
     class PivotalClient
     {
-        private HttpClient _client;
-        private string _apiKey;
+        private readonly HttpClient _client;
+        private readonly string _apiKey;
 
-        public PivotalClient(string apiKey)
+        public PivotalClient()
         {
             _client = new HttpClient {BaseAddress = new Uri("https://www.pivotaltracker.com")};
-            _apiKey = apiKey;
+            _apiKey = ConfigurationManager.AppSettings["PivotalApiKey"];
         }
 
         public PivotalClientResponse Post(string resourceUri, JObject json)

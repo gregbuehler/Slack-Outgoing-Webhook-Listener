@@ -5,8 +5,8 @@ namespace SuperMarioPivotalEdition.Clients
 {
     class FractalClient
     {
-        private Random _random;
-        private List<string> _types;
+        private readonly Random _random;
+        private readonly List<string> _types;
          
         public FractalClient()
         {

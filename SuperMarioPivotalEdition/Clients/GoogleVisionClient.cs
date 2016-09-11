@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -12,15 +13,15 @@ namespace SuperMarioPivotalEdition.Clients
 {
     class GoogleVisionClient
     {
-        private HttpClient _client;
-        private HttpClient _genericClient;
-        private string _apiKey;
+        private readonly HttpClient _client;
+        private readonly HttpClient _genericClient;
+        private readonly string _apiKey;
 
-        public GoogleVisionClient(string apiKey)
+        public GoogleVisionClient()
         {
             _client = new HttpClient { BaseAddress = new Uri("https://vision.googleapis.com") };
             _genericClient = new HttpClient();
-            _apiKey = apiKey;
+            _apiKey = ConfigurationManager.AppSettings["GoogleApiKey"];
         }
 
         public GoogleVisionResponse Annotate(string imageUrl)

@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Raven.Client.Document;
 using SuperMarioPivotalEdition.Models;
-using SuperMarioPivotalEdition.Data;
 
-namespace SuperMarioPivotalEdition.Clients
+namespace SuperMarioPivotalEdition.Data
 {
     class RavenDatabaseClient : IDatabaseClient
     {
         private readonly DocumentStore _documentStore;
 
-        public RavenDatabaseClient(string databaseName)
+        public RavenDatabaseClient()
         {
             _documentStore = new DocumentStore
             {
                 Url = "http://localhost:8080",
-                DefaultDatabase = databaseName
-            };
+                DefaultDatabase = ConfigurationManager.AppSettings["RavenDatabaseName"]
+        };
             _documentStore.Initialize();
         }
 

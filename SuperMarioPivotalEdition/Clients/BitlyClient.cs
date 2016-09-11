@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Web;
 
@@ -6,13 +7,13 @@ namespace SuperMarioPivotalEdition.Clients
 {
     class BitlyClient
     {
-        private HttpClient _client;
-        private string _apiKey;
+        private readonly HttpClient _client;
+        private readonly string _apiKey;
 
-        public BitlyClient(string apiKey)
+        public BitlyClient()
         {
             _client = new HttpClient { BaseAddress = new Uri("https://api-ssl.bitly.com") };
-            _apiKey = apiKey;
+            _apiKey = ConfigurationManager.AppSettings["BitlyApiKey"];
         }
 
         public string ShortenUrl(string url)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using Raven.Abstractions.Util;
+using System.Configuration;
 using SuperMarioPivotalEdition.Models;
 
 namespace SuperMarioPivotalEdition.Data
@@ -10,7 +10,7 @@ namespace SuperMarioPivotalEdition.Data
     {
         public void UpdateSlackChannelInfo(SlackChannelInfo slackChannelInfo)
         {
-            using (var connection = new SqlConnection(ConfigurationManager.GetAppSetting("SqlConnectionString")))
+            using (var connection = new SqlConnection(ConfigurationManager.AppSettings["SqlConnectionString"]))
             {
                 var pSlackChannelName = new SqlParameter
                 {

@@ -1,21 +1,13 @@
 ﻿using System;
-using SuperMarioPivotalEdition.Clients;
 using SuperMarioPivotalEdition.Listeners;
 
 namespace SuperMarioPivotalEdition
 {
     internal static class MainClass
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
-            var serverAddress = args[0];
-            var slackToken = args[1];
-            var pivotalApiKey = args[2];
-            var bitlyApiKey = args[3];
-            var catApiKey = args[4];
-            var imgurApiKey = args[5];
-            var googleApiKey = args[6];
-            var slackListener = new SlackListener(new RavenDatabaseClient("Mario"), serverAddress, slackToken, pivotalApiKey, bitlyApiKey, catApiKey, imgurApiKey, googleApiKey);
+            var slackListener = new SlackListener();
             slackListener.ListenForSlackOutgoingWebhooks();
             Console.ReadLine();
         }
