@@ -63,6 +63,9 @@
   <ItemGroup>
     <Build Include="Tables\SlackChannel.sql" />
     <Build Include="Stored Procedures\Update_SlackChannel.sql" />
+    <Build Include="Stored Procedures\Update_DefaultTaskDescription.sql" />
+    <Build Include="Stored Procedures\Delete_DefaultTaskDescription.sql" />
+    <Build Include="Stored Procedures\Get_DefaultTaskDescription.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Mario.refactorlog" />

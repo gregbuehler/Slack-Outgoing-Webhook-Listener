@@ -13,7 +13,7 @@ namespace SuperMarioPivotalEdition.Listeners
     class SlackListener
     {
         readonly HttpListener _httpListener;
-        private readonly DatabaseClient _databaseClient;
+        private readonly RavenDatabaseClient _ravenDatabaseClient;
         private readonly PivotalClient _pivotalClient;
         private readonly FractalClient _fractalClient;
         private readonly BitlyClient _bitlyClient;
@@ -25,9 +25,9 @@ namespace SuperMarioPivotalEdition.Listeners
         private readonly TextBeltClient _textBeltClient;
         private readonly string _slackOutgoingWebhookToken;
 
-        public SlackListener(DatabaseClient databaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey, string imgurApiKey, string googleApiKey)
+        public SlackListener(RavenDatabaseClient ravenDatabaseClient, string serverAddress, string slackOutgoingWebhookToken, string pivotalApiKey, string bitlyApiKey, string catApiKey, string imgurApiKey, string googleApiKey)
         {
-            _databaseClient = databaseClient;
+            _ravenDatabaseClient = ravenDatabaseClient;
             _pivotalClient = new PivotalClient(pivotalApiKey);
             _fractalClient = new FractalClient();
             _bitlyClient = new BitlyClient(bitlyApiKey);
@@ -79,7 +79,7 @@ namespace SuperMarioPivotalEdition.Listeners
             var formTextContent = form["text"].Substring(triggerWord.Length).Trim(' ', '#', ':', '<', '>');
             Console.WriteLine($"formTextContent:{formTextContent}");
             var channel = form["channel_name"];
-            var channelInfo = _databaseClient.GetChannelInfoFromChannelName(channel);
+            var channelInfo = _ravenDatabaseClient.GetSlackChannelInfo(channel);
             var token = form["token"];
             var response = "";
             if (token != _slackOutgoingWebhookToken) return response;
@@ -118,24 +118,24 @@ namespace SuperMarioPivotalEdition.Listeners
                     break;
                 case "add default task":
                     channelInfo.DefaultTaskDescriptions.Add(formTextContent);
-                    _databaseClient.WriteToDatabase(channelInfo);
+                    _ravenDatabaseClient.UpdateSlackChannelInfo(channelInfo);
                     response = "New default task added.";
                     break;
                 case "clear default tasks":
                     channelInfo.DefaultTaskDescriptions = new List<string>();
-                    _databaseClient.WriteToDatabase(channelInfo);
+                    _ravenDatabaseClient.UpdateSlackChannelInfo(channelInfo);
                     response = "Default task list cleared.";
                     break;
                 case "set project id":
                     channelInfo.PivotalProjectId = formTextContent;
-                    _databaseClient.WriteToDatabase(channelInfo);
+                    _ravenDatabaseClient.UpdateSlackChannelInfo(channelInfo);
                     response = $"Pivotal project ID set to {formTextContent}.";
                     break;
                 case "set default tasks from json":
                     var jarray = JArray.Parse(formTextContent);
                     var taskList = jarray.ToObject<List<string>>();
                     channelInfo.DefaultTaskDescriptions = taskList;
-                    _databaseClient.WriteToDatabase(channelInfo);
+                    _ravenDatabaseClient.UpdateSlackChannelInfo(channelInfo);
                     response = $"Default tasks set to:```{jarray}```";
                     break;
                 case "random fractal":

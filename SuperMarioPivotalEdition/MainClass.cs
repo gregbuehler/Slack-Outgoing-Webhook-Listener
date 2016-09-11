@@ -15,7 +15,7 @@ namespace SuperMarioPivotalEdition
             var catApiKey = args[4];
             var imgurApiKey = args[5];
             var googleApiKey = args[6];
-            var slackListener = new SlackListener(new DatabaseClient("Mario"), serverAddress, slackToken, pivotalApiKey, bitlyApiKey, catApiKey, imgurApiKey, googleApiKey);
+            var slackListener = new SlackListener(new RavenDatabaseClient("Mario"), serverAddress, slackToken, pivotalApiKey, bitlyApiKey, catApiKey, imgurApiKey, googleApiKey);
             slackListener.ListenForSlackOutgoingWebhooks();
             Console.ReadLine();
         }

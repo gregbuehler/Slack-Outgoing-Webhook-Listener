@@ -2,14 +2,15 @@
 using System.Linq;
 using Raven.Client.Document;
 using SuperMarioPivotalEdition.Models;
+using SuperMarioPivotalEdition.Data;
 
 namespace SuperMarioPivotalEdition.Clients
 {
-    class DatabaseClient
+    class RavenDatabaseClient : IDatabaseClient
     {
         private readonly DocumentStore _documentStore;
 
-        public DatabaseClient(string databaseName)
+        public RavenDatabaseClient(string databaseName)
         {
             _documentStore = new DocumentStore
             {
@@ -19,7 +20,7 @@ namespace SuperMarioPivotalEdition.Clients
             _documentStore.Initialize();
         }
 
-        public void WriteToDatabase(SlackChannelInfo slackChannelInfo)
+        public void UpdateSlackChannelInfo(SlackChannelInfo slackChannelInfo)
         {
             using (var session = _documentStore.OpenSession())
             {
@@ -28,14 +29,14 @@ namespace SuperMarioPivotalEdition.Clients
             }
         }
 
-        public SlackChannelInfo GetChannelInfoFromChannelName(string slackChannelName)
+        public SlackChannelInfo GetSlackChannelInfo(string slackChannelName)
         {
             using (var session = _documentStore.OpenSession())
             {
                 var channelInfo = session.Query<SlackChannelInfo>().FirstOrDefault(x => x.SlackChannelName == slackChannelName);
                 if (channelInfo != null) return channelInfo;
                 channelInfo = new SlackChannelInfo(slackChannelName, "", new List<string>());
-                WriteToDatabase(channelInfo);
+                UpdateSlackChannelInfo(channelInfo);
                 return channelInfo;
             }
         }
