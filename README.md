@@ -8,7 +8,7 @@ The primary focus is Pivotal. Pivotal Tracker has no concept of a "story templat
 
 You put the bot on a publically-accessible server. Somebody types trigger words into Slack, Slack connects to the bot, and the bot connects to one of the aforementioned APIs.
 
-For the Pivotal functionality, each Slack channel can be assigned default tasks and a Pivotal project ID. That way, different teams can define their own default task list. The Pivotal project ID and default tasks are persisted to a database (either Raven or SQL).
+For the Pivotal functionality, each Slack channel can be assigned default tasks and a Pivotal project ID. That way, different teams can define their own default task list. The Slack channel name, Pivotal project ID, and default tasks are persisted to a database (either Raven or SQL).
 
 # Prerequisites
 
