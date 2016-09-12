@@ -44,6 +44,6 @@ It looks like this:
 ###Server-side setup:
 
 1. Build `SuperMarioPivotalEdition.sln` in Visual Studio.
-2. Copy the `bin` folder (`...\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug`) to your server.
-3. Open `SuperMarioPivotalEdition.exe.config`, and put your API keys and connection info in the `appSettings` section. Obviously don't commit this to source control, unless you enjoy being hacked like a massive loser.
-4. Run `SuperMarioPivotalEdition.exe`. It's now listening for incoming calls.
+2. Copy the `Debug` folder (`...\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug`) to your server.
+3. In the `Debug` folder, open `SuperMarioPivotalEdition.exe.config`, and put your API keys and connection info in the `appSettings` section. Obviously don't commit this to source control, unless you enjoy being hacked like a massive loser.
+4. In the `Debug` folder, run `SuperMarioPivotalEdition.exe`. It's now listening for incoming calls.
