@@ -117,8 +117,10 @@ namespace SuperMarioPivotalEdition.Listeners
                     response = _pivotalClient.PostStory(channelInfo, formTextContent).ShortResponseMessage;
                     break;
                 case "add tasks":
-                    var allSucceeded = _pivotalClient.PostDefaultTasks(channelInfo, formTextContent).Aggregate(true, (b, resp) => b && resp.IsSuccessful);
-                    response = allSucceeded ? "Default tasks added." : "Error adding tasks.";
+                    var pivotalResponses = _pivotalClient.PostDefaultTasks(channelInfo, formTextContent);
+                    var numSucceeded = pivotalResponses.Select(r => r.IsSuccessful ? 1 : 0).Sum();
+                    var numTasks = pivotalResponses.Count;
+                    response = numTasks == numSucceeded ? "Default tasks added." : $"Error adding tasks. {numSucceeded} of {numTasks} tasks added successfully.";
                     break;
                 case "add default task":
                     channelInfo.DefaultTaskDescriptions.Add(formTextContent);

@@ -3,3 +3,12 @@ C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.d
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.pdb
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\Mario.dll
 C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\Mario.pdb
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.dacpac
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.dll
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.pdb
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\Model.xml
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\refactor.xml
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\postdeploy.sql
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\predeploy.sql
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\Mario.dll
+C:\code\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\Mario.pdb
