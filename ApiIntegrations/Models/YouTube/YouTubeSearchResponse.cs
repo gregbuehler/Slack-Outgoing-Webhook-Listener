@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SuperMarioPivotalEdition.Models
+namespace ApiIntegrations.Models.YouTube
 {
     public class YouTubeSearchResponse
     {
@@ -70,5 +70,4 @@ namespace SuperMarioPivotalEdition.Models
         public int width { get; set; }
         public int height { get; set; }
     }
-
 }

@@ -3,11 +3,11 @@ using Newtonsoft.Json;
 
 namespace SuperMarioPivotalEdition.Models
 {
-    class SlackChannelInfo
+    internal class SlackChannelInfo
     {
-        public string SlackChannelName;
-        public int PivotalProjectId;
         public List<string> DefaultTaskDescriptions;
+        public int PivotalProjectId;
+        public string SlackChannelName;
 
         public SlackChannelInfo(string slackChannelName, int pivotalProjectId, List<string> defaultTaskDescriptions)
         {

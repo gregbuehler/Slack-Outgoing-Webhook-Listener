@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SuperMarioPivotalEdition.Models.Pivotal
+namespace ApiIntegrations.Models.Pivotal
 {
     public class Project
     {
@@ -45,5 +41,4 @@ namespace SuperMarioPivotalEdition.Models.Pivotal
         public string olson_name { get; set; }
         public string offset { get; set; }
     }
-
 }

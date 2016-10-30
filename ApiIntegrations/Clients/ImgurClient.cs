@@ -3,20 +3,21 @@ using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using ApiIntegrations.Models.Imgur;
 using Newtonsoft.Json;
-using SuperMarioPivotalEdition.Models;
 
-namespace SuperMarioPivotalEdition.Clients
+namespace ApiIntegrations.Clients
 {
-    class ImgurClient
+    public class ImgurClient
     {
         private readonly HttpClient _client;
         private readonly Random _random;
 
         public ImgurClient()
         {
-            _client = new HttpClient { BaseAddress = new Uri("https://api.imgur.com") };
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Client-ID", ConfigurationManager.AppSettings["ImgurApiKey"]);
+            _client = new HttpClient {BaseAddress = new Uri("https://api.imgur.com")};
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Client-ID",
+                ConfigurationManager.AppSettings["ImgurApiKey"]);
             _random = new Random();
         }
 
@@ -34,7 +35,5 @@ namespace SuperMarioPivotalEdition.Clients
             var rand = irImages[_random.Next(0, irImages.Count)];
             return rand;
         }
-
-
     }
 }

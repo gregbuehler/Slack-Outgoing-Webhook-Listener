@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SuperMarioPivotalEdition.Clients
+namespace ApiIntegrations.Clients
 {
-    class FractalClient
+    public class FractalClient
     {
         private readonly Random _random;
         private readonly List<string> _types;
-         
+
         public FractalClient()
         {
             _random = new Random();
-            _types = new List<string>()
+            _types = new List<string>
             {
                 "schroder",
                 "newton",
@@ -25,7 +25,7 @@ namespace SuperMarioPivotalEdition.Clients
         {
             var randomType = _types[_random.Next(_types.Count)];
             var coefs = "";
-            for (int i = 0; i < _random.Next(4, 9); i++)
+            for (var i = 0; i < _random.Next(4, 9); i++)
             {
                 coefs += (0.5 - _random.NextDouble()).ToString("F2");
                 coefs += "/";

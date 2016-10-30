@@ -1,6 +1,6 @@
-﻿namespace SuperMarioPivotalEdition.Models
+﻿namespace ApiIntegrations.Models.GoogleBooks
 {
-    class GoogleBooksResponse
+    internal class GoogleBooksResponse
     {
         public string kind { get; set; }
         public int totalItems { get; set; }
@@ -142,6 +142,5 @@
         {
             public string textSnippet { get; set; }
         }
-
     }
 }

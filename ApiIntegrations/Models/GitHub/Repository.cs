@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SuperMarioPivotalEdition.Models.GitHub
+namespace ApiIntegrations.Models.GitHub
 {
     public class Repository
     {
@@ -102,5 +102,4 @@ namespace SuperMarioPivotalEdition.Models.GitHub
         public bool push { get; set; }
         public bool pull { get; set; }
     }
-
 }

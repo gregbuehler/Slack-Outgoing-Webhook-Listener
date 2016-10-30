@@ -1,6 +1,5 @@
-﻿namespace SuperMarioPivotalEdition.Models
+﻿namespace ApiIntegrations.Models.Imgur
 {
-
     public class ImgurResponse
     {
         public Datum[] data { get; set; }

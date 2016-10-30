@@ -6,7 +6,7 @@ using SuperMarioPivotalEdition.Models;
 
 namespace SuperMarioPivotalEdition.Data
 {
-    class RavenDatabaseClient : IDatabaseClient
+    internal class RavenDatabaseClient : IDatabaseClient
     {
         private readonly DocumentStore _documentStore;
 
@@ -16,7 +16,7 @@ namespace SuperMarioPivotalEdition.Data
             {
                 Url = "http://localhost:8080",
                 DefaultDatabase = ConfigurationManager.AppSettings["RavenDatabaseName"]
-        };
+            };
             _documentStore.Initialize();
         }
 
@@ -33,7 +33,8 @@ namespace SuperMarioPivotalEdition.Data
         {
             using (var session = _documentStore.OpenSession())
             {
-                var channelInfo = session.Query<SlackChannelInfo>().FirstOrDefault(x => x.SlackChannelName == slackChannelName);
+                var channelInfo =
+                    session.Query<SlackChannelInfo>().FirstOrDefault(x => x.SlackChannelName == slackChannelName);
                 if (channelInfo != null) return channelInfo;
                 channelInfo = new SlackChannelInfo(slackChannelName, 0, new List<string>());
                 UpdateSlackChannelInfo(channelInfo);

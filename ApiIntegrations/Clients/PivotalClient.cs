@@ -3,17 +3,18 @@ using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using ApiIntegrations.Models.Pivotal;
 using Newtonsoft.Json;
-using SuperMarioPivotalEdition.Models.Pivotal;
 
-namespace SuperMarioPivotalEdition.Clients
+namespace ApiIntegrations.Clients
 {
-    class PivotalClient
+    public class PivotalClient
     {
         private readonly HttpClient _client = new HttpClient
         {
             BaseAddress = new Uri("https://www.pivotaltracker.com")
         };
+
         private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -31,25 +32,30 @@ namespace SuperMarioPivotalEdition.Clients
         {
             var c = new StringContent(JsonConvert.SerializeObject(content, _jsonSerializerSettings))
             {
-                Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
+                Headers = {ContentType = new MediaTypeHeaderValue("application/json")}
             };
             var response = _client.PostAsync($"services/v5/{resourceUri}", c).Result;
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result, _jsonSerializerSettings);
-            throw new Exception($"POST to Pivotal:\nResource: {resourceUri}\nPayload: {content}\nPivotal Response: {response.Content.ReadAsStringAsync().Result}\n");
+                return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result,
+                    _jsonSerializerSettings);
+            throw new Exception(
+                $"POST to Pivotal:\nResource: {resourceUri}\nPayload: {content}\nPivotal Response: {response.Content.ReadAsStringAsync().Result}\n");
         }
 
         private T Get<T>(string resourceUri)
         {
             var response = _client.GetAsync($"services/v5/{resourceUri}").Result;
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result, _jsonSerializerSettings);
-            throw new Exception($"GET to Pivotal:\nResource: {resourceUri}\nPivotal Response: {response.Content.ReadAsStringAsync().Result}\n");
+                return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result,
+                    _jsonSerializerSettings);
+            throw new Exception(
+                $"GET to Pivotal:\nResource: {resourceUri}\nPivotal Response: {response.Content.ReadAsStringAsync().Result}\n");
         }
 
         public Project[] GetProjects()
         {
-            return Get<Project[]>("projects"); ;
+            return Get<Project[]>("projects");
+            ;
         }
 
         public Story GetStory(Story story)
@@ -59,7 +65,7 @@ namespace SuperMarioPivotalEdition.Clients
 
         public Story PostStory(Story story)
         {
-           return Post($"projects/{story.project_id}/stories", story);
+            return Post($"projects/{story.project_id}/stories", story);
         }
 
         public Task PostTask(Story story, Task task)
@@ -81,7 +87,6 @@ namespace SuperMarioPivotalEdition.Clients
             catch (Exception)
             {
                 foreach (var project in GetProjects())
-                {
                     try
                     {
                         story.project_id = project.id;
@@ -92,8 +97,8 @@ namespace SuperMarioPivotalEdition.Clients
                     {
                         // ignored
                     }
-                }
-                throw new Exception($"Could not find project ID for story ID #{story.id}, even after exhaustive search through projects available to this user.");
+                throw new Exception(
+                    $"Could not find project ID for story ID #{story.id}, even after exhaustive search through projects available to this user.");
             }
         }
     }

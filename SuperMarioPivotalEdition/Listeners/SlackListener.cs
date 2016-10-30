@@ -6,28 +6,28 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using ApiIntegrations.Clients;
+using ApiIntegrations.Models.Pivotal;
 using Newtonsoft.Json.Linq;
-using SuperMarioPivotalEdition.Clients;
 using SuperMarioPivotalEdition.Data;
-using SuperMarioPivotalEdition.Models.Pivotal;
 
 namespace SuperMarioPivotalEdition.Listeners
 {
-    class SlackListener
+    internal class SlackListener
     {
-        readonly HttpListener _httpListener;
-        private readonly IDatabaseClient _databaseClient;
-        private readonly PivotalClient _pivotalClient;
-        private readonly FractalClient _fractalClient;
         private readonly BitlyClient _bitlyClient;
         private readonly CatApiClient _catApiClient;
-        private readonly ImgurClient _imgurClient;
-        private readonly YouTubeClient _youTubeClient;
-        private readonly GoogleVisionClient _googleVisionClient;
-        private readonly GoogleBooksClient _googleBooksClient;
-        private readonly TextBeltClient _textBeltClient;
+        private readonly IDatabaseClient _databaseClient;
+        private readonly FractalClient _fractalClient;
         private readonly GitHubClient _gitHubClient;
+        private readonly GoogleBooksClient _googleBooksClient;
+        private readonly GoogleVisionClient _googleVisionClient;
+        private readonly HttpListener _httpListener;
+        private readonly ImgurClient _imgurClient;
+        private readonly PivotalClient _pivotalClient;
         private readonly string _slackOutgoingWebhookToken;
+        private readonly TextBeltClient _textBeltClient;
+        private readonly YouTubeClient _youTubeClient;
 
         public SlackListener()
         {
@@ -122,7 +122,7 @@ namespace SuperMarioPivotalEdition.Listeners
                     {
                         name = formTextContent,
                         project_id = channelInfo.PivotalProjectId,
-                        tasks = channelInfo.DefaultTaskDescriptions.Select(d => new Task { description = d }).ToArray()
+                        tasks = channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray()
                     }).url;
                     response = $"New story created at {url}";
                     break;
@@ -163,7 +163,9 @@ namespace SuperMarioPivotalEdition.Listeners
                 case "add cats":
                     var numCats = int.Parse(formTextContent);
                     var catRes = _catApiClient.GetCats(numCats);
-                    response = catRes.data.images.Aggregate("", (s, image) => s + _bitlyClient.ShortenUrl(image.url) + "\n").Trim();
+                    response =
+                        catRes.data.images.Aggregate("", (s, image) => s + _bitlyClient.ShortenUrl(image.url) + "\n")
+                            .Trim();
                     break;
                 case "youtube":
                     response = _youTubeClient.SearchForRandom(formTextContent);
@@ -179,7 +181,7 @@ namespace SuperMarioPivotalEdition.Listeners
                     response = _bitlyClient.ShortenUrl(barchart);
                     break;
                 case "send text":
-                    var temp = formTextContent?.Split(new [] {' '}, 2);
+                    var temp = formTextContent?.Split(new[] {' '}, 2);
                     var phoneNumber = temp[0].Trim();
                     var messageText = temp[1].Trim();
                     response = _textBeltClient.SendMessage(phoneNumber, messageText);

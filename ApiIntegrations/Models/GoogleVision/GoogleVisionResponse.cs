@@ -1,6 +1,5 @@
-﻿namespace SuperMarioPivotalEdition.Models
+﻿namespace ApiIntegrations.Models.GoogleVision
 {
-
     public class GoogleVisionResponse
     {
         public Respons[] responses { get; set; }

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("SuperMarioPivotalEdition")]
+[assembly: AssemblyTitle("ApiIntegrations")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SuperMarioPivotalEdition")]
+[assembly: AssemblyProduct("ApiIntegrations")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("a8ab7f86-e2c6-4a7a-aa28-f17aea82c839")]
+[assembly: Guid("18756bb6-59e4-4bda-9302-795abd31a42c")]
 
 // Version information for an assembly consists of the following four values:
 //

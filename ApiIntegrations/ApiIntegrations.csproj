@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A8AB7F86-E2C6-4A7A-AA28-F17AEA82C839}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{18756BB6-59E4-4BDA-9302-795ABD31A42C}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SuperMarioPivotalEdition</RootNamespace>
-    <AssemblyName>SuperMarioPivotalEdition</AssemblyName>
+    <RootNamespace>ApiIntegrations</RootNamespace>
+    <AssemblyName>ApiIntegrations</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,46 +29,43 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup />
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Raven.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB.Client.3.0.30037\lib\net45\Raven.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Raven.Client.Lightweight, Version=3.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB.Client.3.0.30037\lib\net45\Raven.Client.Lightweight.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\IDatabaseClient.cs" />
-    <Compile Include="Data\RavenDatabaseClient.cs" />
-    <Compile Include="Data\SqlDatabaseClient.cs" />
-    <Compile Include="MainClass.cs" />
-    <Compile Include="Models\SlackChannelInfo.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="Clients\BitlyClient.cs" />
+    <Compile Include="Clients\CatApiClient.cs" />
+    <Compile Include="Clients\FractalClient.cs" />
+    <Compile Include="Clients\GitHubClient.cs" />
+    <Compile Include="Clients\GoogleBooksClient.cs" />
+    <Compile Include="Clients\GoogleVisionClient.cs" />
+    <Compile Include="Clients\ImgurClient.cs" />
+    <Compile Include="Clients\PivotalClient.cs" />
+    <Compile Include="Clients\TextBeltClient.cs" />
+    <Compile Include="Clients\YouTubeClient.cs" />
+    <Compile Include="Models\CatApi\CatApiResponse.cs" />
+    <Compile Include="Models\GitHub\Repository.cs" />
+    <Compile Include="Models\GoogleBooks\GoogleBooksResponse.cs" />
+    <Compile Include="Models\GoogleVision\GoogleVisionResponse.cs" />
+    <Compile Include="Models\Imgur\ImgurResponse.cs" />
+    <Compile Include="Models\Pivotal\Project.cs" />
+    <Compile Include="Models\Pivotal\Story.cs" />
+    <Compile Include="Models\Pivotal\Task.cs" />
+    <Compile Include="Models\YouTube\YouTubeSearchResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Listeners\SlackListener.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ApiIntegrations\ApiIntegrations.csproj">
-      <Project>{18756bb6-59e4-4bda-9302-795abd31a42c}</Project>
-      <Name>ApiIntegrations</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

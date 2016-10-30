@@ -2,7 +2,7 @@
 
 namespace SuperMarioPivotalEdition.Data
 {
-    interface IDatabaseClient
+    internal interface IDatabaseClient
     {
         void UpdateSlackChannelInfo(SlackChannelInfo slackChannelInfo);
         SlackChannelInfo GetSlackChannelInfo(string slackChannelName);
