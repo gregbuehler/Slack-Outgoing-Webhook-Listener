@@ -55,12 +55,34 @@ namespace ApiIntegrations.Clients
         public Project[] GetProjects()
         {
             return Get<Project[]>("projects");
-            ;
         }
 
         public Story GetStory(Story story)
         {
             return Get<Story>($"projects/{story.project_id}/stories/{story.id}");
+        }
+
+        public Story GetStoryWithProjectIdSafetyCheck(Story story)
+        {
+            try
+            {
+                return GetStory(story);
+            }
+            catch (Exception)
+            {
+                foreach (var project in GetProjects())
+                    try
+                    {
+                        story.project_id = project.id;
+                        return GetStory(story);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                throw new Exception(
+                    $"Could not find story ID #{story.id}, even after exhaustive search through projects available to this user.");
+            }
         }
 
         public Story PostStory(Story story)
@@ -76,30 +98,6 @@ namespace ApiIntegrations.Clients
         public Task[] PostTasks(Story story, Task[] tasks)
         {
             return tasks.Select(t => PostTask(story, t)).ToArray();
-        }
-
-        public Task[] PostTasksWithProjectIdSafetyCheck(Story story, Task[] tasks)
-        {
-            try
-            {
-                return PostTasks(story, tasks);
-            }
-            catch (Exception)
-            {
-                foreach (var project in GetProjects())
-                    try
-                    {
-                        story.project_id = project.id;
-                        story = GetStory(story);
-                        return PostTasks(story, tasks);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                throw new Exception(
-                    $"Could not find project ID for story ID #{story.id}, even after exhaustive search through projects available to this user.");
-            }
         }
     }
 }

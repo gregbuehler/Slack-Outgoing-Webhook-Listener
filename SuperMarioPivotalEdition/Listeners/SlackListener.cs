@@ -112,7 +112,7 @@ namespace SuperMarioPivotalEdition.Listeners
 *google books blastoise*: Searches Google Books for a random book excerpt containing ""Blastoise"".
 *google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.
 *send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.
-*search repos blah* - Returns a GitHub URL that searches all organization repos code for ""blah"". GitHub removed the UI way to do this in 2013 for performance reasons.";
+*search repos blah* - Returns a GitHub URL that searches all organization repos code for ""blah"". GitHub removed the easy way to do this in 2013 for performance reasons.";
                     break;
                 case "info":
                     response = $"```{channelInfo}```";
@@ -124,16 +124,17 @@ namespace SuperMarioPivotalEdition.Listeners
                         project_id = channelInfo.PivotalProjectId,
                         tasks = channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray()
                     }).url;
-                    response = $"New story created at {url}";
+                    response = $"<{url}|New story created.>";
                     break;
                 case "add tasks":
-                    _pivotalClient.PostTasksWithProjectIdSafetyCheck(new Story
-                        {
-                            id = Convert.ToInt32(formTextContent),
-                            project_id = channelInfo.PivotalProjectId
-                        },
+                    var story = _pivotalClient.GetStoryWithProjectIdSafetyCheck(new Story
+                    {
+                        id = int.Parse(formTextContent),
+                        project_id = channelInfo.PivotalProjectId
+                    });
+                    _pivotalClient.PostTasks(story,
                         channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray());
-                    response = "Default tasks added.";
+                    response = $"<{story.url}|Default tasks added.>";
                     break;
                 case "add default task":
                     channelInfo.DefaultTaskDescriptions.Add(formTextContent);
@@ -146,7 +147,7 @@ namespace SuperMarioPivotalEdition.Listeners
                     response = "Default task list cleared.";
                     break;
                 case "set project id":
-                    channelInfo.PivotalProjectId = Convert.ToInt32(formTextContent);
+                    channelInfo.PivotalProjectId = int.Parse(formTextContent);
                     _databaseClient.UpdateSlackChannelInfo(channelInfo);
                     response = $"Pivotal project ID set to {formTextContent}.";
                     break;
@@ -187,7 +188,7 @@ namespace SuperMarioPivotalEdition.Listeners
                     response = _textBeltClient.SendMessage(phoneNumber, messageText);
                     break;
                 case "search repos":
-                    response = $"<{_gitHubClient.GetUrlToCodeSearchOrganizationRepos(formTextContent)}|Search results>";
+                    response = $"<{_gitHubClient.GetUrlToCodeSearchOrganizationRepos(formTextContent)}|Search results.>";
                     break;
             }
             return response;

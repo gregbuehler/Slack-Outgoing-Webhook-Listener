@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Clients\BitlyClient.cs" />
     <Compile Include="Clients\CatApiClient.cs" />
     <Compile Include="Clients\FractalClient.cs" />
