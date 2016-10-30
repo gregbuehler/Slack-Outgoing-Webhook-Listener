@@ -2,6 +2,6 @@
 (
 	[Id] INT NOT NULL IDENTITY, 
 	[SlackChannelName] NVARCHAR(50) NOT NULL UNIQUE, 
-    [PivotalProjectId] NVARCHAR(50) NULL, 
+    [PivotalProjectId] INT NULL, 
     PRIMARY KEY ([Id])
 )

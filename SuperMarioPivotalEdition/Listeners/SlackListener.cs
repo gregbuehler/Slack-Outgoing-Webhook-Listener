@@ -9,6 +9,7 @@ using System.Web;
 using Newtonsoft.Json.Linq;
 using SuperMarioPivotalEdition.Clients;
 using SuperMarioPivotalEdition.Data;
+using SuperMarioPivotalEdition.Models.Pivotal;
 
 namespace SuperMarioPivotalEdition.Listeners
 {
@@ -25,6 +26,7 @@ namespace SuperMarioPivotalEdition.Listeners
         private readonly GoogleVisionClient _googleVisionClient;
         private readonly GoogleBooksClient _googleBooksClient;
         private readonly TextBeltClient _textBeltClient;
+        private readonly GitHubClient _gitHubClient;
         private readonly string _slackOutgoingWebhookToken;
 
         public SlackListener()
@@ -41,6 +43,7 @@ namespace SuperMarioPivotalEdition.Listeners
             _googleVisionClient = new GoogleVisionClient();
             _googleBooksClient = new GoogleBooksClient();
             _textBeltClient = new TextBeltClient();
+            _gitHubClient = new GitHubClient();
             _slackOutgoingWebhookToken = ConfigurationManager.AppSettings["SlackOutgoingWebhookToken"];
             _httpListener = new HttpListener();
             _httpListener.Prefixes.Add(ConfigurationManager.AppSettings["ServerAddress"]);
@@ -108,19 +111,29 @@ namespace SuperMarioPivotalEdition.Listeners
 *imgur catnip* - Searches Imgur for ""catnip"" and returns a random image from the top 50-ish results.
 *google books blastoise*: Searches Google Books for a random book excerpt containing ""Blastoise"".
 *google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.
-*send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.";
+*send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.
+*search repos blah* - Returns a GitHub URL that searches all organization repos code for ""blah"". GitHub removed the UI way to do this in 2013 for performance reasons.";
                     break;
                 case "info":
                     response = $"```{channelInfo}```";
                     break;
                 case "add story":
-                    response = _pivotalClient.PostStory(channelInfo, formTextContent).ShortResponseMessage;
+                    var url = _pivotalClient.PostStory(new Story
+                    {
+                        name = formTextContent,
+                        project_id = channelInfo.PivotalProjectId,
+                        tasks = channelInfo.DefaultTaskDescriptions.Select(d => new Task { description = d }).ToArray()
+                    }).url;
+                    response = $"New story created at {url}";
                     break;
                 case "add tasks":
-                    var pivotalResponses = _pivotalClient.PostDefaultTasks(channelInfo, formTextContent);
-                    var numSucceeded = pivotalResponses.Select(r => r.IsSuccessful ? 1 : 0).Sum();
-                    var numTasks = pivotalResponses.Count;
-                    response = numTasks == numSucceeded ? "Default tasks added." : $"Error adding tasks. {numSucceeded} of {numTasks} tasks added successfully.";
+                    _pivotalClient.PostTasksWithProjectIdSafetyCheck(new Story
+                        {
+                            id = Convert.ToInt32(formTextContent),
+                            project_id = channelInfo.PivotalProjectId
+                        },
+                        channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray());
+                    response = "Default tasks added.";
                     break;
                 case "add default task":
                     channelInfo.DefaultTaskDescriptions.Add(formTextContent);
@@ -133,7 +146,7 @@ namespace SuperMarioPivotalEdition.Listeners
                     response = "Default task list cleared.";
                     break;
                 case "set project id":
-                    channelInfo.PivotalProjectId = formTextContent;
+                    channelInfo.PivotalProjectId = Convert.ToInt32(formTextContent);
                     _databaseClient.UpdateSlackChannelInfo(channelInfo);
                     response = $"Pivotal project ID set to {formTextContent}.";
                     break;
@@ -170,6 +183,9 @@ namespace SuperMarioPivotalEdition.Listeners
                     var phoneNumber = temp[0].Trim();
                     var messageText = temp[1].Trim();
                     response = _textBeltClient.SendMessage(phoneNumber, messageText);
+                    break;
+                case "search repos":
+                    response = $"<{_gitHubClient.GetUrlToCodeSearchOrganizationRepos(formTextContent)}|Search results>";
                     break;
             }
             return response;

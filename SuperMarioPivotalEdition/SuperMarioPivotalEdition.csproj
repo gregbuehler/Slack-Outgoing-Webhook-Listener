@@ -34,7 +34,6 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -58,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Clients\BitlyClient.cs" />
     <Compile Include="Clients\CatApiClient.cs" />
+    <Compile Include="Clients\GitHubClient.cs" />
     <Compile Include="Data\IDatabaseClient.cs" />
     <Compile Include="Data\RavenDatabaseClient.cs" />
     <Compile Include="Clients\FractalClient.cs" />
@@ -70,10 +70,14 @@
     <Compile Include="Clients\YouTubeClient.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="Models\CatApiResponse.cs" />
+    <Compile Include="Models\GitHub\Repository.cs" />
     <Compile Include="Models\GoogleBooksResponse.cs" />
     <Compile Include="Models\GoogleVisionResponse.cs" />
     <Compile Include="Models\ImgurResponse.cs" />
     <Compile Include="Models\PivotalClientResponse.cs" />
+    <Compile Include="Models\Pivotal\Project.cs" />
+    <Compile Include="Models\Pivotal\Story.cs" />
+    <Compile Include="Models\Pivotal\Task.cs" />
     <Compile Include="Models\SlackChannelInfo.cs" />
     <Compile Include="Models\YouTubeSearchResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

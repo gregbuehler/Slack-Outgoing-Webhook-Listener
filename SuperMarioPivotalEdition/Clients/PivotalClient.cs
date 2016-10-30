@@ -1,81 +1,100 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using Newtonsoft.Json.Linq;
-using SuperMarioPivotalEdition.Models;
+using Newtonsoft.Json;
+using SuperMarioPivotalEdition.Models.Pivotal;
 
 namespace SuperMarioPivotalEdition.Clients
 {
     class PivotalClient
     {
-        private readonly HttpClient _client;
-        private readonly string _apiKey;
+        private readonly HttpClient _client = new HttpClient
+        {
+            BaseAddress = new Uri("https://www.pivotaltracker.com")
+        };
+        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            Formatting = Formatting.Indented
+        };
 
         public PivotalClient()
         {
-            _client = new HttpClient {BaseAddress = new Uri("https://www.pivotaltracker.com")};
-            _apiKey = ConfigurationManager.AppSettings["PivotalApiKey"];
+            var apiKey = ConfigurationManager.AppSettings["PivotalApiKey"];
+            _client.DefaultRequestHeaders.Add("X-TrackerToken", apiKey);
         }
 
-        public PivotalClientResponse Post(string resourceUri, JObject json)
+        private T Post<T>(string resourceUri, T content)
         {
-            var content = new StringContent(json.ToString());
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            content.Headers.Add("X-TrackerToken", _apiKey);
-            var response = _client.PostAsync(resourceUri, content).Result;
-            Thread.Sleep(1000);
-            Console.WriteLine($"Posted to Pivotal:\nResource: {resourceUri}\nPayload: {json},\nPivotal Response: {response.Content.ReadAsStringAsync().Result}\n");
-            var pivotalClientResponse = new PivotalClientResponse
+            var c = new StringContent(JsonConvert.SerializeObject(content, _jsonSerializerSettings))
             {
-                IsSuccessful = response.IsSuccessStatusCode,
-                HttpResponseMessage = response
+                Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
             };
-            return pivotalClientResponse;
+            var response = _client.PostAsync($"services/v5/{resourceUri}", c).Result;
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result, _jsonSerializerSettings);
+            throw new Exception($"POST to Pivotal:\nResource: {resourceUri}\nPayload: {content}\nPivotal Response: {response.Content.ReadAsStringAsync().Result}\n");
         }
 
-        public PivotalClientResponse PostTask(SlackChannelInfo slackChannelInfo, string storyId, string taskDescription)
+        private T Get<T>(string resourceUri)
         {
-            var json = new JObject(new JProperty("description", taskDescription));
-            var pivotalClientResponse =
-                Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories/{storyId}/tasks", json);
-            pivotalClientResponse.ShortResponseMessage = pivotalClientResponse.IsSuccessful
-                ? $"Task \"{taskDescription}\" posted successfully."
-                : "Error posting task.";
-            return pivotalClientResponse;
+            var response = _client.GetAsync($"services/v5/{resourceUri}").Result;
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result, _jsonSerializerSettings);
+            throw new Exception($"GET to Pivotal:\nResource: {resourceUri}\nPivotal Response: {response.Content.ReadAsStringAsync().Result}\n");
         }
 
-        public List<PivotalClientResponse> PostDefaultTasks(SlackChannelInfo slackChannelInfo, string storyId)
+        public Project[] GetProjects()
         {
-            var responses = slackChannelInfo.DefaultTaskDescriptions.Select(taskDescription => PostTask(slackChannelInfo, storyId, taskDescription));
-            return responses.ToList();
+            return Get<Project[]>("projects"); ;
         }
 
-        public PivotalClientResponse PostStory(SlackChannelInfo slackChannelInfo, string storyName)
+        public Story GetStory(Story story)
         {
-            var tasks = new JArray();
-            foreach (var defaultTaskDescription in slackChannelInfo.DefaultTaskDescriptions)
+            return Get<Story>($"projects/{story.project_id}/stories/{story.id}");
+        }
+
+        public Story PostStory(Story story)
+        {
+           return Post($"projects/{story.project_id}/stories", story);
+        }
+
+        public Task PostTask(Story story, Task task)
+        {
+            return Post($"projects/{story.project_id}/stories/{story.id}/tasks", task);
+        }
+
+        public Task[] PostTasks(Story story, Task[] tasks)
+        {
+            return tasks.Select(t => PostTask(story, t)).ToArray();
+        }
+
+        public Task[] PostTasksWithProjectIdSafetyCheck(Story story, Task[] tasks)
+        {
+            try
             {
-                tasks.Add(new JObject(new JProperty("description", defaultTaskDescription)));
+                return PostTasks(story, tasks);
             }
-            var json = new JObject(
-                new JProperty("name", storyName),
-                new JProperty("tasks", tasks));
-            var pivotalClientResponse = Post($"/services/v5/projects/{slackChannelInfo.PivotalProjectId}/stories", json);
-            if (pivotalClientResponse.IsSuccessful)
+            catch (Exception)
             {
-                dynamic dHttpResponse = JObject.Parse(pivotalClientResponse.HttpResponseMessage.Content.ReadAsStringAsync().Result);
-                var url = dHttpResponse.url;
-                pivotalClientResponse.ShortResponseMessage = $"Story created at {url}";
+                foreach (var project in GetProjects())
+                {
+                    try
+                    {
+                        story.project_id = project.id;
+                        story = GetStory(story);
+                        return PostTasks(story, tasks);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
+                throw new Exception($"Could not find project ID for story ID #{story.id}, even after exhaustive search through projects available to this user.");
             }
-            else
-            {
-                pivotalClientResponse.ShortResponseMessage = "Error creating story.";
-            }
-            return pivotalClientResponse;
         }
     }
 }

@@ -1,8 +1,3 @@
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.dacpac
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.dll
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.pdb
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\Mario.dll
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\Mario\obj\Debug\Mario.pdb
 C:\code\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.dacpac
 C:\code\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.dll
 C:\code\Slack-Outgoing-Webhook-Listener\Mario\bin\Debug\Mario.pdb

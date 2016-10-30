@@ -14,7 +14,6 @@ C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\bin\D
 C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Peter\Documents\SuperMarioPivotalEdition\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.csprojResolveAssemblyReference.cache
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\SuperMarioPivotalEdition.exe.config
 C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\SuperMarioPivotalEdition.exe.config
 C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\SuperMarioPivotalEdition.exe
 C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\SuperMarioPivotalEdition.pdb
@@ -28,17 +27,4 @@ C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven
 C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Client.Lightweight.xml
 C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.exe
 C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.pdb
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\SuperMarioPivotalEdition.exe
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\SuperMarioPivotalEdition.pdb
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Abstractions.dll
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Client.Lightweight.dll
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Abstractions.pdb
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Abstractions.xml
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Client.Lightweight.pdb
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\bin\Debug\Raven.Client.Lightweight.xml
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.exe
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.pdb
 C:\code\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.csprojResolveAssemblyReference.cache
-C:\Users\Peter\Documents\Slack-Outgoing-Webhook-Listener\SuperMarioPivotalEdition\obj\Debug\SuperMarioPivotalEdition.csprojResolveAssemblyReference.cache

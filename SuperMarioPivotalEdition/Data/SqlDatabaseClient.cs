@@ -26,7 +26,7 @@ namespace SuperMarioPivotalEdition.Data
 
         public SlackChannelInfo GetSlackChannelInfo(string slackChannelName)
         {
-            string pivotalId;
+            int pivotalId;
             var descriptions = new List<string>();
             using (var connection = new SqlConnection(ConfigurationManager.AppSettings["SqlConnectionString"]))
             {
@@ -37,7 +37,7 @@ namespace SuperMarioPivotalEdition.Data
                     command.Parameters.AddWithValue("@SlackChannelName", slackChannelName);
                     var reader = command.ExecuteReader();
                     reader.Read();
-                    pivotalId = (string)reader["PivotalProjectId"];
+                    pivotalId = (int)reader["PivotalProjectId"];
                     reader.Close();
                 }
                 using (var command = new SqlCommand("Get_DefaultTaskDescription", connection))

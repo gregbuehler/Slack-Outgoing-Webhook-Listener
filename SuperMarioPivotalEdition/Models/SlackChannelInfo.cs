@@ -6,10 +6,10 @@ namespace SuperMarioPivotalEdition.Models
     class SlackChannelInfo
     {
         public string SlackChannelName;
-        public string PivotalProjectId;
+        public int PivotalProjectId;
         public List<string> DefaultTaskDescriptions;
 
-        public SlackChannelInfo(string slackChannelName, string pivotalProjectId, List<string> defaultTaskDescriptions)
+        public SlackChannelInfo(string slackChannelName, int pivotalProjectId, List<string> defaultTaskDescriptions)
         {
             SlackChannelName = slackChannelName;
             PivotalProjectId = pivotalProjectId;
