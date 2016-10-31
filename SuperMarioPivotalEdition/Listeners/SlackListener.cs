@@ -132,9 +132,21 @@ namespace SuperMarioPivotalEdition.Listeners
                         id = int.Parse(formTextContent),
                         project_id = channelInfo.PivotalProjectId
                     });
-                    _pivotalClient.PostTasks(story,
-                        channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray());
-                    response = $"<{story.url}|Default tasks added.>";
+                    var tasks = channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray();
+                    var count = 0;
+                    foreach (var task in tasks)
+                    {
+                        try
+                        {
+                            _pivotalClient.PostTask(story, task);
+                            count++;
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+                    }
+                    response = count == tasks.Length ? $"<{story.url}|Default tasks added.>" : $"Error addings tasks. <{story.url}|{count} of {tasks.Length} tasks added.>";
                     break;
                 case "add default task":
                     channelInfo.DefaultTaskDescriptions.Add(formTextContent);

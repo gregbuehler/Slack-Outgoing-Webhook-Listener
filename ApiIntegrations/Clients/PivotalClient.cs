@@ -94,10 +94,5 @@ namespace ApiIntegrations.Clients
         {
             return Post($"projects/{story.project_id}/stories/{story.id}/tasks", task);
         }
-
-        public Task[] PostTasks(Story story, Task[] tasks)
-        {
-            return tasks.Select(t => PostTask(story, t)).ToArray();
-        }
     }
 }
