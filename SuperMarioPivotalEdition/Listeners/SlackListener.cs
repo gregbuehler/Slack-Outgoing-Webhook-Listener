@@ -141,9 +141,9 @@ namespace SuperMarioPivotalEdition.Listeners
                             _pivotalClient.PostTask(story, task);
                             count++;
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            // ignored
+                            Console.WriteLine(ex.ToString());
                         }
                     }
                     response = count == tasks.Length ? $"<{story.url}|Default tasks added.>" : $"Error addings tasks. <{story.url}|{count} of {tasks.Length} tasks added.>";
