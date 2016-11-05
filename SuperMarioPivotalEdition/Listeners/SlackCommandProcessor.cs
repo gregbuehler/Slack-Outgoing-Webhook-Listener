@@ -11,23 +11,23 @@ using SuperMarioPivotalEdition.Models;
 
 namespace SuperMarioPivotalEdition.Listeners
 {
-    class SlackCommandProcessor
+    internal class SlackCommandProcessor
     {
-        private readonly string _slackOutgoingWebhookToken;
         private readonly BitlyClient _bitlyClient;
         private readonly CatApiClient _catApiClient;
         private readonly IDatabaseClient _databaseClient;
+        private readonly Dictionary<string, Func<string>> _dict;
         private readonly FractalClient _fractalClient;
         private readonly GitHubClient _gitHubClient;
         private readonly GoogleBooksClient _googleBooksClient;
         private readonly GoogleVisionClient _googleVisionClient;
         private readonly ImgurClient _imgurClient;
         private readonly PivotalClient _pivotalClient;
+        private readonly string _slackOutgoingWebhookToken;
         private readonly TextBeltClient _textBeltClient;
         private readonly YouTubeClient _youTubeClient;
-        private readonly Dictionary<string, Func<string>> _dict;
-        private string _formTextContent;
         private SlackChannelInfo _channelInfo;
+        private string _formTextContent;
 
         public SlackCommandProcessor()
         {
@@ -44,7 +44,7 @@ namespace SuperMarioPivotalEdition.Listeners
                 {"set default tasks from json", SetDefaultTasksFromJson},
                 {"random fractal", RandomFractal},
                 {"add cats", AddCats},
-                {"youtube" ,YouTube},
+                {"youtube", YouTube},
                 {"imgur", Imgur},
                 {"google books", GoogleBooks},
                 {"google vision", GoogleVision},
@@ -52,7 +52,7 @@ namespace SuperMarioPivotalEdition.Listeners
                 {"search repos", SearchRepos}
             };
             _databaseClient = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["SqlConnectionString"])
-                ? (IDatabaseClient)new SqlDatabaseClient()
+                ? (IDatabaseClient) new SqlDatabaseClient()
                 : new RavenDatabaseClient();
             _pivotalClient = new PivotalClient();
             _fractalClient = new FractalClient();
@@ -82,7 +82,7 @@ namespace SuperMarioPivotalEdition.Listeners
 
         private string SendText()
         {
-            var temp = _formTextContent?.Split(new[] { ' ' }, 2);
+            var temp = _formTextContent?.Split(new[] {' '}, 2);
             var phoneNumber = temp[0].Trim();
             var messageText = temp[1].Trim();
             return _textBeltClient.SendMessage(phoneNumber, messageText);
@@ -160,10 +160,9 @@ namespace SuperMarioPivotalEdition.Listeners
                 id = int.Parse(_formTextContent),
                 project_id = _channelInfo.PivotalProjectId
             });
-            var tasks = _channelInfo.DefaultTaskDescriptions.Select(d => new ApiIntegrations.Models.Pivotal.Task { description = d }).ToArray();
+            var tasks = _channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray();
             var count = 0;
             foreach (var task in tasks)
-            {
                 try
                 {
                     _pivotalClient.PostTask(story, task);
@@ -173,7 +172,6 @@ namespace SuperMarioPivotalEdition.Listeners
                 {
                     Console.WriteLine(ex.ToString());
                 }
-            }
             return count == tasks.Length
                 ? $"<{story.url}|Default tasks added.>"
                 : $"Error addings tasks. <{story.url}|{count} of {tasks.Length} tasks added.>";
@@ -185,7 +183,7 @@ namespace SuperMarioPivotalEdition.Listeners
             {
                 name = _formTextContent,
                 project_id = _channelInfo.PivotalProjectId,
-                tasks = _channelInfo.DefaultTaskDescriptions.Select(d => new ApiIntegrations.Models.Pivotal.Task { description = d }).ToArray()
+                tasks = _channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray()
             }).url;
             return $"<{url}|New story created.>";
         }
@@ -218,7 +216,5 @@ namespace SuperMarioPivotalEdition.Listeners
 *send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.
 *search repos blah* - Returns a GitHub URL that searches all organization repos code for ""blah"". GitHub removed the easy way to do this in 2013 for performance reasons.";
         }
-
-
     }
 }
