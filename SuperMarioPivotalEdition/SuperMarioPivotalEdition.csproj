@@ -58,6 +58,7 @@
     <Compile Include="Data\IDatabaseClient.cs" />
     <Compile Include="Data\RavenDatabaseClient.cs" />
     <Compile Include="Data\SqlDatabaseClient.cs" />
+    <Compile Include="Listeners\SlackCommandProcessor.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="Models\SlackChannelInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
