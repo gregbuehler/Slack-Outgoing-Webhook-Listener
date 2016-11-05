@@ -8,11 +8,8 @@ using Newtonsoft.Json.Linq;
 
 namespace SuperMarioPivotalEdition.Listeners
 {
-    
-
     internal class SlackListener
     {
-
         private readonly HttpListener _httpListener;
         private readonly SlackCommandProcessor _slackCommandProcessor;
 

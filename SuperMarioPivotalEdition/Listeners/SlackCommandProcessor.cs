@@ -64,7 +64,6 @@ namespace SuperMarioPivotalEdition.Listeners
             _googleBooksClient = new GoogleBooksClient();
             _textBeltClient = new TextBeltClient();
             _gitHubClient = new GitHubClient();
-
         }
 
         public string Process(NameValueCollection form)

@@ -30,7 +30,7 @@ namespace ApiIntegrations.Clients
                 coefs += (0.5 - _random.NextDouble()).ToString("F2");
                 coefs += "/";
             }
-            return $"http://pareidoliaiscreated.org:8001/fractal/{randomType}/0/1/1/{coefs}medium.png";
+            return $"http://fractals.pareidoliaiscreated.org/{randomType}/0/1/1/{coefs}medium.png";
         }
     }
 }
