@@ -68,11 +68,13 @@ namespace SuperMarioPivotalEdition.Listeners
 
         public string Process(NameValueCollection form)
         {
-            var authorized = form["token"] == _slackOutgoingWebhookToken;
+            var slackSecurityToken = form["token"];
+            var authorized = slackSecurityToken == _slackOutgoingWebhookToken;
+            if (!authorized) return "UNAUTHORIZED LOSER DETECTED";
             var triggerWord = form["trigger_word"].ToLower();
             _formTextContent = form["text"].Substring(triggerWord.Length).Trim(' ', '#', ':', '<', '>');
             _channelInfo = _databaseClient.GetSlackChannelInfo(form["channel_name"]);
-            return authorized ? _dict[triggerWord]() : "Unauthorized.";
+            return _dict[triggerWord]();
         }
 
         private string SearchRepos()
