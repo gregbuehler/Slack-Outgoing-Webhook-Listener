@@ -9,14 +9,15 @@ using Newtonsoft.Json;
 
 namespace ApiIntegrations.Clients
 {
-    public class GitHubClient
+    public class GitHubClient : IClient
     {
         private readonly HttpClient _client;
         private readonly string _organization;
+        private readonly string _apiKey;
 
         public GitHubClient()
         {
-            var apiKey = ConfigurationManager.AppSettings["GitHubApiKey"];
+            _apiKey = ConfigurationManager.AppSettings["GitHubApiKey"];
             _organization = ConfigurationManager.AppSettings["GitHubOrganization"];
             _client = new HttpClient
             {
@@ -24,7 +25,7 @@ namespace ApiIntegrations.Clients
                 DefaultRequestHeaders =
                 {
                     Authorization =
-                        new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(apiKey)))
+                        new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(_apiKey)))
                 }
             };
             _client.DefaultRequestHeaders.UserAgent.ParseAdd("C# HttpClient");
@@ -57,6 +58,11 @@ namespace ApiIntegrations.Clients
         public string GetUrlToCodeSearchOrganizationRepos(string codeSnippet)
         {
             return GetUrlToCodeSearchRepos(GetOrgRepos(), codeSnippet);
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

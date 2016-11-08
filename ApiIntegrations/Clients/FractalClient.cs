@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ApiIntegrations.Clients
 {
-    public class FractalClient
+    public class FractalClient : IClient
     {
         private readonly Random _random;
         private readonly List<string> _types;
@@ -31,6 +31,11 @@ namespace ApiIntegrations.Clients
                 coefs += "/";
             }
             return $"http://fractals.pareidoliaiscreated.org/{randomType}/0/1/1/{coefs}medium.png";
+        }
+
+        public bool HealthCheck()
+        {
+            return true;
         }
     }
 }

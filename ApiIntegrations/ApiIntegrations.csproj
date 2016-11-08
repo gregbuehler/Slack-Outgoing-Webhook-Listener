@@ -48,6 +48,7 @@
     <Compile Include="Clients\GitHubClient.cs" />
     <Compile Include="Clients\GoogleBooksClient.cs" />
     <Compile Include="Clients\GoogleVisionClient.cs" />
+    <Compile Include="Clients\IClient.cs" />
     <Compile Include="Clients\ImgurClient.cs" />
     <Compile Include="Clients\PivotalClient.cs" />
     <Compile Include="Clients\TextBeltClient.cs" />

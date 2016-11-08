@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace ApiIntegrations.Clients
 {
-    public class YouTubeClient
+    public class YouTubeClient : IClient
     {
         private readonly string _apiKey;
         private readonly HttpClient _client;
@@ -37,6 +37,11 @@ namespace ApiIntegrations.Clients
                 SearchFor(searchTerms).items.Select(i => $"https://www.youtube.com/watch?v={i.id.videoId}").ToList();
             var rand = resp[_random.Next(0, resp.Count)];
             return rand;
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

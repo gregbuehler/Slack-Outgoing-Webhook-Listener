@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace ApiIntegrations.Clients
 {
-    public class GoogleBooksClient
+    public class GoogleBooksClient : IClient
     {
         private readonly string _apiKey;
         private readonly HttpClient _client;
@@ -55,6 +55,11 @@ namespace ApiIntegrations.Clients
             foreach (var kvp in _htmlTagsToConvert)
                 output.Replace(kvp.Key, kvp.Value);
             return output.ToString();
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

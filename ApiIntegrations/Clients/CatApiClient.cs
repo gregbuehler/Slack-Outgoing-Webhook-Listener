@@ -6,7 +6,7 @@ using ApiIntegrations.Models.CatApi;
 
 namespace ApiIntegrations.Clients
 {
-    public class CatApiClient
+    public class CatApiClient : IClient
     {
         private readonly string _apiKey;
         private readonly HttpClient _client = new HttpClient {BaseAddress = new Uri("http://thecatapi.com")};
@@ -24,6 +24,11 @@ namespace ApiIntegrations.Clients
             var stream = response.Content.ReadAsStreamAsync().Result;
             var res = (CatApiResponse) xmlSerializer.Deserialize(stream);
             return res;
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

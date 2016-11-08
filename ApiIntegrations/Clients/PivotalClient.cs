@@ -7,24 +7,26 @@ using Newtonsoft.Json;
 
 namespace ApiIntegrations.Clients
 {
-    public class PivotalClient
+    public class PivotalClient : IClient
     {
-        private readonly HttpClient _client = new HttpClient
-        {
-            BaseAddress = new Uri("https://www.pivotaltracker.com")
-        };
-
-        private readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            Formatting = Formatting.Indented
-        };
+        private readonly HttpClient _client;
+        private readonly JsonSerializerSettings _jsonSerializerSettings;
+        private readonly string _apiKey;
 
         public PivotalClient()
         {
-            var apiKey = ConfigurationManager.AppSettings["PivotalApiKey"];
-            _client.DefaultRequestHeaders.Add("X-TrackerToken", apiKey);
+            _apiKey = ConfigurationManager.AppSettings["PivotalApiKey"];
+            _jsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Formatting = Formatting.Indented
+            };
+            _client = new HttpClient
+            {
+                BaseAddress = new Uri("https://www.pivotaltracker.com")
+            };
+            _client.DefaultRequestHeaders.Add("X-TrackerToken", _apiKey);
         }
 
         private T Post<T>(string resourceUri, T content)
@@ -92,6 +94,11 @@ namespace ApiIntegrations.Clients
         public Task PostTask(Story story, Task task)
         {
             return Post($"projects/{story.project_id}/stories/{story.id}/tasks", task);
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

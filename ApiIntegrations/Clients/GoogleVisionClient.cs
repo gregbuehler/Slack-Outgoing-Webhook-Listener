@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ApiIntegrations.Clients
 {
-    public class GoogleVisionClient
+    public class GoogleVisionClient : IClient
     {
         private readonly string _apiKey;
         private readonly HttpClient _client;
@@ -57,6 +57,11 @@ namespace ApiIntegrations.Clients
             var labelsUrlString = HttpUtility.UrlEncode(labels.Aggregate("", (s, s1) => s + s1 + "|").Trim('|'));
             return
                 $"https://chart.googleapis.com/chart?cht=bhs&chs=500x300&chd=t:{valuesUrlString}&chxt=x,y&chxl=1:|{labelsUrlString}";
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

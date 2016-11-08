@@ -5,7 +5,7 @@ using System.Web;
 
 namespace ApiIntegrations.Clients
 {
-    public class BitlyClient
+    public class BitlyClient : IClient
     {
         private readonly string _apiKey;
         private readonly HttpClient _client;
@@ -22,6 +22,11 @@ namespace ApiIntegrations.Clients
             var urlShortened =
                 _client.GetStringAsync($"/v3/shorten?access_token={_apiKey}&longUrl={urlEncoded}&format=txt").Result;
             return urlShortened;
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

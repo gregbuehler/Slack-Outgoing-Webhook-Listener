@@ -8,16 +8,17 @@ using Newtonsoft.Json;
 
 namespace ApiIntegrations.Clients
 {
-    public class ImgurClient
+    public class ImgurClient : IClient
     {
         private readonly HttpClient _client;
         private readonly Random _random;
+        private readonly string _apiKey;
 
         public ImgurClient()
         {
             _client = new HttpClient {BaseAddress = new Uri("https://api.imgur.com")};
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Client-ID",
-                ConfigurationManager.AppSettings["ImgurApiKey"]);
+            _apiKey = ConfigurationManager.AppSettings["ImgurApiKey"];
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Client-ID", _apiKey);
             _random = new Random();
         }
 
@@ -34,6 +35,11 @@ namespace ApiIntegrations.Clients
             var irImages = ir.data.Where(d => !d.is_album && !d.nsfw).Select(d => d.link).ToList();
             var rand = irImages[_random.Next(0, irImages.Count)];
             return rand;
+        }
+
+        public bool HealthCheck()
+        {
+            return !string.IsNullOrWhiteSpace(_apiKey);
         }
     }
 }

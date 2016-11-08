@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
+using System.Text;
 using ApiIntegrations.Clients;
 using ApiIntegrations.Models.Pivotal;
 using Newtonsoft.Json.Linq;
@@ -16,7 +17,7 @@ namespace SuperMarioPivotalEdition.Listeners
         private readonly BitlyClient _bitlyClient;
         private readonly CatApiClient _catApiClient;
         private readonly IDatabaseClient _databaseClient;
-        private readonly Dictionary<string, Func<string>> _dict;
+        private readonly Dictionary<string, Func<string>> _triggerWordMap;
         private readonly FractalClient _fractalClient;
         private readonly GitHubClient _gitHubClient;
         private readonly GoogleBooksClient _googleBooksClient;
@@ -32,7 +33,7 @@ namespace SuperMarioPivotalEdition.Listeners
         public SlackCommandProcessor()
         {
             _slackOutgoingWebhookToken = ConfigurationManager.AppSettings["SlackOutgoingWebhookToken"];
-            _dict = new Dictionary<string, Func<string>>
+            _triggerWordMap = new Dictionary<string, Func<string>>
             {
                 {"help", Help},
                 {"info", Info},
@@ -74,7 +75,7 @@ namespace SuperMarioPivotalEdition.Listeners
             var triggerWord = form["trigger_word"].ToLower();
             _formTextContent = form["text"].Substring(triggerWord.Length).Trim(' ', '#', ':', '<', '>');
             _channelInfo = _databaseClient.GetSlackChannelInfo(form["channel_name"]);
-            return _dict[triggerWord]();
+            return _triggerWordMap[triggerWord]();
         }
 
         private string SearchRepos()
@@ -195,10 +196,11 @@ namespace SuperMarioPivotalEdition.Listeners
             return $"```{_channelInfo}```";
         }
 
-        private string Help()
+        // Fix this
+        public string Help()
         {
-            return @"_All commands are case-insensitive_:
-**Pivotal commands**:
+            const string genericHelp = "_All commands are case-insensitive_:" + "\n";
+            const string pivotalHelp = @"**Pivotal commands**:
 *help* - Displays command help.
 *info* - Displays this channel's associated Pivotal info.
 *set project id 123* - Sets this channel's associated Pivotal Project ID to 123.
@@ -206,17 +208,36 @@ namespace SuperMarioPivotalEdition.Listeners
 *add story Giant Beetle* - Creates a new Pivotal issue with name ""Giant Beetle"" with default tasks.
 *add default task Check exhaust ports* - Adds a new task to your team's default tasks.
 *clear default tasks* - Clears default task list.
-*set default tasks from json [""task1"", ""task2""]* - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once.
-
-**Random commands**
-*random fractal* - Posts a random root-finder fractal.
-*add cats 2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.
-*youtube cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.
-*imgur catnip* - Searches Imgur for ""catnip"" and returns a random image from the top 50-ish results.
-*google books blastoise*: Searches Google Books for a random book excerpt containing ""Blastoise"".
-*google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.
-*send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.
-*search repos blah* - Returns a GitHub URL that searches all organization repos code for ""blah"". GitHub removed the easy way to do this in 2013 for performance reasons.";
+*set default tasks from json [""task1"", ""task2""]* - Parses a JSON array and sets it as the default tasks. Useful for setting tasks all at once." + "\n";
+            const string fractalHelp = "*random fractal* - Posts a random root-finder fractal.";
+            const string catApiHelp = "*add cats 2* - Posts 2 cat pictures. Currently Slack only unfurls at most 3 images per post.";
+            const string youTubeHelp = @"*youtube cats and dogs* - Searches YouTube for ""cats and dogs"" and returns a random video from the top 10 results.";
+            const string imgurHelp = @"*imgur catnip* - Searches Imgur for ""catnip"" and returns a random image from the top 50-ish results.";
+            const string googleBooksHelp = @"*google books blastoise*: Searches Google Books for a random book excerpt containing ""Blastoise"".";
+            const string googleVisionHelp = @"*google vision [URL of some image]* - Displays a barchart of Google Cloud Vision's interpretation of the most likely features it thinks are in the image.";
+            const string textBeltHelp = @"*send text 5033071525 I'd like a cheeseburger* - Sends a text message to the phone number.";
+            const string gitHubHelp = @"*search repos blah* - Returns a GitHub URL that searches all organization repos code for ""blah"". GitHub removed the easy way to do this in 2013 for performance reasons.";
+            var dict = new Dictionary<IClient, string>
+            {
+                {_pivotalClient, pivotalHelp},
+                {_fractalClient, fractalHelp},
+                {_catApiClient, catApiHelp},
+                {_youTubeClient, youTubeHelp},
+                {_imgurClient, imgurHelp},
+                {_googleBooksClient, googleBooksHelp},
+                {_googleVisionClient, googleVisionHelp},
+                {_textBeltClient, textBeltHelp},
+                {_gitHubClient, gitHubHelp}
+            };
+            var helpString = new StringBuilder(genericHelp);
+            foreach (var kvp in dict)
+            {
+                if (kvp.Key.HealthCheck())
+                {
+                    helpString.AppendLine(kvp.Value);
+                }
+            }
+            return helpString.ToString().Trim();
         }
     }
 }

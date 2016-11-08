@@ -4,7 +4,7 @@ using System.Net.Http;
 
 namespace ApiIntegrations.Clients
 {
-    public class TextBeltClient
+    public class TextBeltClient : IClient
     {
         private readonly HttpClient _client;
 
@@ -23,6 +23,11 @@ namespace ApiIntegrations.Clients
             };
             _client.PostAsync("/text", new FormUrlEncodedContent(values));
             return $"Sent text to {phoneNumber}.";
+        }
+
+        public bool HealthCheck()
+        {
+            return true;
         }
     }
 }
