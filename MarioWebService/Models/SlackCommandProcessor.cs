@@ -7,10 +7,8 @@ using System.Text;
 using ApiIntegrations.Clients;
 using ApiIntegrations.Models.Pivotal;
 using Newtonsoft.Json.Linq;
-using SuperMarioPivotalEdition.Data;
-using SuperMarioPivotalEdition.Models;
 
-namespace SuperMarioPivotalEdition.Listeners
+namespace MarioWebService.Models
 {
     internal class SlackCommandProcessor
     {

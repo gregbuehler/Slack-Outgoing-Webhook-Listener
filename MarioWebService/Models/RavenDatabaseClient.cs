@@ -2,9 +2,8 @@
 using System.Configuration;
 using System.Linq;
 using Raven.Client.Document;
-using SuperMarioPivotalEdition.Models;
 
-namespace SuperMarioPivotalEdition.Data
+namespace MarioWebService.Models
 {
     internal class RavenDatabaseClient : IDatabaseClient
     {

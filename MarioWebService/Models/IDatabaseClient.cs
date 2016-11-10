@@ -1,6 +1,4 @@
-﻿using SuperMarioPivotalEdition.Models;
-
-namespace SuperMarioPivotalEdition.Data
+﻿namespace MarioWebService.Models
 {
     internal interface IDatabaseClient
     {
