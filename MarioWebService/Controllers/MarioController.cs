@@ -10,7 +10,16 @@ namespace MarioWebService.Controllers
         [HttpPost]
         public string Endpoint(NameValueCollection form)
         {
-            return Processor.Process(form);
+            string response;
+            try
+            {
+                response = Processor.Process(form);
+            }
+            catch
+            {
+                response = "SCREAMS OF DEATH";
+            }
+            return response;
         }
     }
 }
