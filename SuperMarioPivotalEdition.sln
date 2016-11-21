@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Mario", "Mario\Mario.sqlproj", "{45971FA5-A2CD-4D27-A1CE-9F72830323F7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiIntegrations", "ApiIntegrations\ApiIntegrations.csproj", "{18756BB6-59E4-4BDA-9302-795ABD31A42C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarioWebService", "MarioWebService\MarioWebService.csproj", "{FF8ECEDE-D406-490C-87E9-EBF18F461202}"
 EndProject
@@ -21,10 +19,6 @@ Global
 		{45971FA5-A2CD-4D27-A1CE-9F72830323F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45971FA5-A2CD-4D27-A1CE-9F72830323F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45971FA5-A2CD-4D27-A1CE-9F72830323F7}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{18756BB6-59E4-4BDA-9302-795ABD31A42C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18756BB6-59E4-4BDA-9302-795ABD31A42C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18756BB6-59E4-4BDA-9302-795ABD31A42C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18756BB6-59E4-4BDA-9302-795ABD31A42C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF8ECEDE-D406-490C-87E9-EBF18F461202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF8ECEDE-D406-490C-87E9-EBF18F461202}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF8ECEDE-D406-490C-87E9-EBF18F461202}.Release|Any CPU.ActiveCfg = Release|Any CPU
