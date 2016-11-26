@@ -4,7 +4,9 @@ using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Web;
+using log4net;
 using Newtonsoft.Json.Linq;
+using SuperMarioPivotalEdition.Models;
 
 namespace SuperMarioPivotalEdition.Listeners
 {
@@ -12,6 +14,7 @@ namespace SuperMarioPivotalEdition.Listeners
     {
         private readonly HttpListener _httpListener;
         private readonly SlackCommandProcessor _slackCommandProcessor;
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SlackListener));
 
         public SlackListener()
         {
@@ -30,7 +33,7 @@ namespace SuperMarioPivotalEdition.Listeners
                 using (var reader = new StreamReader(context.Request.InputStream))
                 {
                     var queryString = reader.ReadToEnd();
-                    Console.WriteLine($"Slack request received. Contents:\n\n{queryString}\n\n");
+                    Log.Debug($"Slack request received. Contents:\n\n{queryString}\n\n");
                     form = HttpUtility.ParseQueryString(queryString);
                 }
                 string responseBody;
@@ -41,7 +44,7 @@ namespace SuperMarioPivotalEdition.Listeners
                 catch (Exception ex)
                 {
                     responseBody = "SCREAMS OF DEATH";
-                    Console.WriteLine(ex.ToString());
+                    Log.Error("Error processing command.", ex);
                 }
                 using (var writer = new StreamWriter(context.Response.OutputStream))
                 {

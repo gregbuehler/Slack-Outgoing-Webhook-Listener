@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using ApiIntegrations.Clients;
 using ApiIntegrations.Models.Pivotal;
+using log4net;
 using Newtonsoft.Json.Linq;
 using SuperMarioPivotalEdition.Data;
-using SuperMarioPivotalEdition.Models;
 
-namespace SuperMarioPivotalEdition.Listeners
+namespace SuperMarioPivotalEdition.Models
 {
     internal class SlackCommandProcessor
     {
@@ -29,6 +29,7 @@ namespace SuperMarioPivotalEdition.Listeners
         private readonly YouTubeClient _youTubeClient;
         private SlackChannelInfo _channelInfo;
         private string _formTextContent;
+        internal static readonly ILog Log = LogManager.GetLogger(typeof(SlackCommandProcessor));
 
         public SlackCommandProcessor()
         {
@@ -65,7 +66,7 @@ namespace SuperMarioPivotalEdition.Listeners
             _googleBooksClient = new GoogleBooksClient();
             _textBeltClient = new TextBeltClient();
             _gitHubClient = new GitHubClient();
-        }
+    }
 
         public string Process(NameValueCollection form)
         {
@@ -173,7 +174,7 @@ namespace SuperMarioPivotalEdition.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Log.Error("Error posting task.", ex);
                 }
             return count == tasks.Length
                 ? $"<{story.url}|Default tasks added.>"
