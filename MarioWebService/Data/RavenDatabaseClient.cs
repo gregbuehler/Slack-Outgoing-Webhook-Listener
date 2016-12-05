@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using MarioWebService.Models;
 using Raven.Client.Document;
 
-namespace MarioWebService.Models
+namespace MarioWebService.Data
 {
     internal class RavenDatabaseClient : IDatabaseClient
     {

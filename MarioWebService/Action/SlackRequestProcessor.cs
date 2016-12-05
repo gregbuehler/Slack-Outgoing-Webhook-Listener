@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Text;
 using ApiIntegrations.Clients;
 using ApiIntegrations.Models.Pivotal;
+using MarioWebService.Data;
+using MarioWebService.Models;
 using Newtonsoft.Json.Linq;
 
-namespace MarioWebService.Models
+namespace MarioWebService.Action
 {
-    internal class SlackCommandProcessor
+    internal class SlackRequestProcessor
     {
         private readonly BitlyClient _bitlyClient;
         private readonly CatApiClient _catApiClient;
@@ -22,15 +23,13 @@ namespace MarioWebService.Models
         private readonly GoogleVisionClient _googleVisionClient;
         private readonly ImgurClient _imgurClient;
         private readonly PivotalClient _pivotalClient;
-        private readonly string _slackOutgoingWebhookToken;
         private readonly TextBeltClient _textBeltClient;
         private readonly YouTubeClient _youTubeClient;
         private SlackChannelInfo _channelInfo;
         private string _formTextContent;
 
-        public SlackCommandProcessor()
+        public SlackRequestProcessor()
         {
-            _slackOutgoingWebhookToken = ConfigurationManager.AppSettings["SlackOutgoingWebhookToken"];
             _triggerWordMap = new Dictionary<string, Func<string>>
             {
                 {"help", Help},
@@ -65,15 +64,11 @@ namespace MarioWebService.Models
             _gitHubClient = new GitHubClient();
         }
 
-        public string Process(NameValueCollection form)
+        public string Process(SlackRequest slackRequest)
         {
-            var slackSecurityToken = form["token"];
-            var authorized = slackSecurityToken == _slackOutgoingWebhookToken;
-            if (!authorized) return "UNAUTHORIZED LOSER DETECTED";
-            var triggerWord = form["trigger_word"].ToLower();
-            _formTextContent = form["text"].Substring(triggerWord.Length).Trim(' ', '#', ':', '<', '>');
-            _channelInfo = _databaseClient.GetSlackChannelInfo(form["channel_name"]);
-            return _triggerWordMap[triggerWord]();
+            _formTextContent = slackRequest.Text;
+            _channelInfo = _databaseClient.GetSlackChannelInfo(slackRequest.ChannelName);
+            return _triggerWordMap[slackRequest.Command]();
         }
 
         private string SearchRepos()
@@ -197,9 +192,8 @@ namespace MarioWebService.Models
         // Fix this
         public string Help()
         {
-            const string genericHelp = "_All commands are case-insensitive_:" + "\n";
+            const string genericHelp = "_All commands are case-insensitive_:\n*help* - Displays command help.\n";
             const string pivotalHelp = @"**Pivotal commands**:
-*help* - Displays command help.
 *info* - Displays this channel's associated Pivotal info.
 *set project id 123* - Sets this channel's associated Pivotal Project ID to 123.
 *add tasks 12345* - Adds default tasks to story ID 12345.

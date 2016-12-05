@@ -2,8 +2,9 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using MarioWebService.Models;
 
-namespace MarioWebService.Models
+namespace MarioWebService.Data
 {
     internal class SqlDatabaseClient : IDatabaseClient
     {

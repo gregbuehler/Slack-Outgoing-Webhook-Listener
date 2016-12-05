@@ -8,11 +8,20 @@ namespace MarioWebService
         {
             config.MapHttpAttributeRoutes();
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "",
+                name: "",
+                routeTemplate: "SlashCommand",
                 defaults: new
                 {
-                    action = "Endpoint",
+                    action = "SlashCommand",
+                    controller = "Mario"
+                }
+            );
+            config.Routes.MapHttpRoute(
+                name: "",
+                routeTemplate: "OutgoingWebhook",
+                defaults: new
+                {
+                    action = "OutgoingWebhook",
                     controller = "Mario"
                 }
             );

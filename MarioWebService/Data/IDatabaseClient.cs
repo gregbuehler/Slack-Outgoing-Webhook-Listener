@@ -1,4 +1,6 @@
-﻿namespace MarioWebService.Models
+﻿using MarioWebService.Models;
+
+namespace MarioWebService.Data
 {
     internal interface IDatabaseClient
     {
