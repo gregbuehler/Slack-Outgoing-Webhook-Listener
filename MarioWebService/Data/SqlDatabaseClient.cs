@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using MarioWebService.Models;
+using static System.Data.CommandType;
 
 namespace MarioWebService.Data
 {
@@ -15,7 +16,7 @@ namespace MarioWebService.Data
                 connection.Open();
                 using (var command = new SqlCommand("Update_SlackChannel", connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandType = StoredProcedure;
                     command.Parameters.AddWithValue("@SlackChannelName", slackChannelInfo.SlackChannelName);
                     command.Parameters.AddWithValue("@PivotalProjectId", slackChannelInfo.PivotalProjectId);
                     command.Parameters.AddWithValue("@Descriptions",
@@ -34,7 +35,7 @@ namespace MarioWebService.Data
                 connection.Open();
                 using (var command = new SqlCommand("Get_SlackChannel", connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandType = StoredProcedure;
                     command.Parameters.AddWithValue("@SlackChannelName", slackChannelName);
                     var reader = command.ExecuteReader();
                     reader.Read();
@@ -43,7 +44,7 @@ namespace MarioWebService.Data
                 }
                 using (var command = new SqlCommand("Get_DefaultTaskDescription", connection))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandType = StoredProcedure;
                     command.Parameters.AddWithValue("@SlackChannelName", slackChannelName);
                     var reader = command.ExecuteReader();
                     while (reader.Read())

@@ -9,7 +9,7 @@ namespace MarioWebService.Validators
 
         public bool IsAuthorized(SlackRequest slackRequest)
         {
-            var token = slackRequest.Token;
+            var token = slackRequest.AuthorizationToken;
             return !string.IsNullOrWhiteSpace(token) && token == SlackToken;
         }
     }

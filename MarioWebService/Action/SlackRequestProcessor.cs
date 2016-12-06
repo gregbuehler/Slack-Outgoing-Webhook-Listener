@@ -16,7 +16,7 @@ namespace MarioWebService.Action
         private readonly BitlyClient _bitlyClient;
         private readonly CatApiClient _catApiClient;
         private readonly IDatabaseClient _databaseClient;
-        private readonly Dictionary<string, Func<string>> _triggerWordMap;
+        private readonly Dictionary<CommandType, Func<string>> _triggerWordMap;
         private readonly FractalClient _fractalClient;
         private readonly GitHubClient _gitHubClient;
         private readonly GoogleBooksClient _googleBooksClient;
@@ -30,24 +30,24 @@ namespace MarioWebService.Action
 
         public SlackRequestProcessor()
         {
-            _triggerWordMap = new Dictionary<string, Func<string>>
+            _triggerWordMap = new Dictionary<CommandType, Func<string>>
             {
-                {"help", Help},
-                {"info", Info},
-                {"set project id", SetProjectId},
-                {"add tasks", AddTasks},
-                {"add story", AddStory},
-                {"add default task", AddDefaultTask},
-                {"clear default tasks", ClearDefaultTasks},
-                {"set default tasks from json", SetDefaultTasksFromJson},
-                {"random fractal", RandomFractal},
-                {"add cats", AddCats},
-                {"youtube", YouTube},
-                {"imgur", Imgur},
-                {"google books", GoogleBooks},
-                {"google vision", GoogleVision},
-                {"send text", SendText},
-                {"search repos", SearchRepos}
+                {CommandType.Help, Help},
+                {CommandType.Info, Info},
+                {CommandType.SetProjectId, SetProjectId},
+                {CommandType.AddTasks, AddTasks},
+                {CommandType.AddStory, AddStory},
+                {CommandType.AddDefaultTask, AddDefaultTask},
+                {CommandType.ClearDefaultTasks, ClearDefaultTasks},
+                {CommandType.SetDefaultTasksFromJson, SetDefaultTasksFromJson},
+                {CommandType.RandomFractal, RandomFractal},
+                {CommandType.AddCats, AddCats},
+                {CommandType.YouTube, YouTube},
+                {CommandType.Imgur, Imgur},
+                {CommandType.GoogleBooks, GoogleBooks},
+                {CommandType.GoogleVision, GoogleVision},
+                {CommandType.SendText, SendText},
+                {CommandType.SearchRepos, SearchRepos}
             };
             _databaseClient = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["SqlConnectionString"])
                 ? (IDatabaseClient) new SqlDatabaseClient()
@@ -66,9 +66,9 @@ namespace MarioWebService.Action
 
         public string Process(SlackRequest slackRequest)
         {
-            _formTextContent = slackRequest.Text;
+            _formTextContent = slackRequest.CommandText;
             _channelInfo = _databaseClient.GetSlackChannelInfo(slackRequest.ChannelName);
-            return _triggerWordMap[slackRequest.Command]();
+            return _triggerWordMap[slackRequest.CommandType]();
         }
 
         private string SearchRepos()
