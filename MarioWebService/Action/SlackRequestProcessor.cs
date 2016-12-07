@@ -147,9 +147,18 @@ namespace MarioWebService.Action
         private SlackResponse AddCats()
         {
             var numCats = int.Parse(_formTextContent);
+            if (numCats <= 0 || numCats >= 21)
+            {
+                return new SlackResponse
+                {
+                    Text = "Too many cats.",
+                    ResponseType = ResponseType.Ephemeral
+                };
+            }
             var catRes = _catApiClient.GetCats(numCats);
             return new SlackResponse
             {
+                Attachments = catRes.data.images.Select(i => new Attachment {title = "", image_url = i.url}).ToList(),
                 Text =
                     catRes.data.images.Aggregate("", (s, image) => s + _bitlyClient.ShortenUrl(image.url) + "\n").Trim(),
                 ResponseType = ResponseType.InChannel
