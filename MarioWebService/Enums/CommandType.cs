@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace MarioWebService.Models
+namespace MarioWebService.Enums
 {
     public enum CommandType
     {

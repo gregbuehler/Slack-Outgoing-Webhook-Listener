@@ -1,4 +1,6 @@
-﻿namespace MarioWebService.Models
+﻿using MarioWebService.Enums;
+
+namespace MarioWebService.Models
 {
     public class SlackRequest
     {

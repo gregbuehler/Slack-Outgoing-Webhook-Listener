@@ -6,6 +6,7 @@ using System.Text;
 using ApiIntegrations.Clients;
 using ApiIntegrations.Models.Pivotal;
 using MarioWebService.Data;
+using MarioWebService.Enums;
 using MarioWebService.Models;
 using Newtonsoft.Json.Linq;
 
@@ -16,7 +17,7 @@ namespace MarioWebService.Action
         private readonly BitlyClient _bitlyClient;
         private readonly CatApiClient _catApiClient;
         private readonly IDatabaseClient _databaseClient;
-        private readonly Dictionary<CommandType, Func<string>> _triggerWordMap;
+        private readonly Dictionary<CommandType, Func<SlackResponse>> _triggerWordMap;
         private readonly FractalClient _fractalClient;
         private readonly GitHubClient _gitHubClient;
         private readonly GoogleBooksClient _googleBooksClient;
@@ -30,7 +31,7 @@ namespace MarioWebService.Action
 
         public SlackRequestProcessor()
         {
-            _triggerWordMap = new Dictionary<CommandType, Func<string>>
+            _triggerWordMap = new Dictionary<CommandType, Func<SlackResponse>>
             {
                 {CommandType.Help, Help},
                 {CommandType.Info, Info},
@@ -64,92 +65,139 @@ namespace MarioWebService.Action
             _gitHubClient = new GitHubClient();
         }
 
-        public string Process(SlackRequest slackRequest)
+        public SlackResponse Process(SlackRequest slackRequest)
         {
             _formTextContent = slackRequest.CommandText;
             _channelInfo = _databaseClient.GetSlackChannelInfo(slackRequest.ChannelName);
             return _triggerWordMap[slackRequest.CommandType]();
         }
 
-        private string SearchRepos()
+        private SlackResponse SearchRepos()
         {
-            return $"<{_gitHubClient.GetUrlToCodeSearchOrganizationRepos(_formTextContent)}|Search results.>";
+            return new SlackResponse
+            {
+                Text = $"<{_gitHubClient.GetUrlToCodeSearchOrganizationRepos(_formTextContent)}|Search results.>",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
-        private string SendText()
+        private SlackResponse SendText()
         {
             var temp = _formTextContent?.Split(new[] {' '}, 2);
             var phoneNumber = temp[0].Trim();
             var messageText = temp[1].Trim();
-            return _textBeltClient.SendMessage(phoneNumber, messageText);
+            return new SlackResponse
+            {
+                Text = _textBeltClient.SendMessage(phoneNumber, messageText),
+                ResponseType = ResponseType.InChannel
+            };
         }
 
-        private string GoogleVision()
+        private SlackResponse GoogleVision()
         {
             var barchart = _googleVisionClient.AnnotateAndReturnUrlOfBarchart(_formTextContent);
-            return _bitlyClient.ShortenUrl(barchart);
+            return new SlackResponse
+            {
+                Text = _bitlyClient.ShortenUrl(barchart),
+                ResponseType = ResponseType.InChannel
+            };
         }
 
-        private string GoogleBooks()
+        private SlackResponse GoogleBooks()
         {
-            return _googleBooksClient.SearchForAndReturnRandomTextSnippet(_formTextContent);
+            return new SlackResponse
+            {
+                Text = _googleBooksClient.SearchForAndReturnRandomTextSnippet(_formTextContent),
+                ResponseType = ResponseType.InChannel
+            };
         }
 
-        private string Imgur()
+        private SlackResponse Imgur()
         {
-            return _bitlyClient.ShortenUrl(_imgurClient.SearchForRandom(_formTextContent));
+            return new SlackResponse
+            {
+                Text = _bitlyClient.ShortenUrl(_imgurClient.SearchForRandom(_formTextContent)),
+                ResponseType = ResponseType.InChannel
+            };
         }
 
-        private string YouTube()
+        private SlackResponse YouTube()
         {
-            return _youTubeClient.SearchForRandom(_formTextContent);
+            return new SlackResponse
+            {
+                Text = _youTubeClient.SearchForRandom(_formTextContent),
+                ResponseType = ResponseType.InChannel
+            };
         }
 
-        private string AddCats()
+        private SlackResponse AddCats()
         {
             var numCats = int.Parse(_formTextContent);
             var catRes = _catApiClient.GetCats(numCats);
-            return
-                catRes.data.images.Aggregate("", (s, image) => s + _bitlyClient.ShortenUrl(image.url) + "\n")
-                    .Trim();
+            return new SlackResponse
+            {
+                Text =
+                    catRes.data.images.Aggregate("", (s, image) => s + _bitlyClient.ShortenUrl(image.url) + "\n").Trim(),
+                ResponseType = ResponseType.InChannel
+            };
         }
 
-        private string RandomFractal()
+        private SlackResponse RandomFractal()
         {
-            return _bitlyClient.ShortenUrl(_fractalClient.RandomFractal());
+            return new SlackResponse
+            {
+                Text = _bitlyClient.ShortenUrl(_fractalClient.RandomFractal()),
+                ResponseType = ResponseType.InChannel
+            };
         }
 
-        private string SetDefaultTasksFromJson()
+        private SlackResponse SetDefaultTasksFromJson()
         {
             var jarray = JArray.Parse(_formTextContent);
             var taskList = jarray.ToObject<List<string>>();
             _channelInfo.DefaultTaskDescriptions = taskList;
             _databaseClient.UpdateSlackChannelInfo(_channelInfo);
-            return $"Default tasks set to:```{jarray}```";
+            return new SlackResponse
+            {
+                Text = $"Default tasks set to:```{jarray}```",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
-        private string SetProjectId()
+        private SlackResponse SetProjectId()
         {
             _channelInfo.PivotalProjectId = int.Parse(_formTextContent);
             _databaseClient.UpdateSlackChannelInfo(_channelInfo);
-            return $"Pivotal project ID set to {_formTextContent}.";
+            return new SlackResponse
+            {
+                Text = $"Pivotal project ID set to {_formTextContent}.",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
-        private string ClearDefaultTasks()
+        private SlackResponse ClearDefaultTasks()
         {
             _channelInfo.DefaultTaskDescriptions = new List<string>();
             _databaseClient.UpdateSlackChannelInfo(_channelInfo);
-            return "Default task list cleared.";
+            return new SlackResponse
+            {
+                Text = "Default task list cleared.",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
-        private string AddDefaultTask()
+        private SlackResponse AddDefaultTask()
         {
             _channelInfo.DefaultTaskDescriptions.Add(_formTextContent);
             _databaseClient.UpdateSlackChannelInfo(_channelInfo);
-            return "New default task added.";
+            return new SlackResponse
+            {
+                Text = "New default task added.",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
-        private string AddTasks()
+        private SlackResponse AddTasks()
         {
             var story = _pivotalClient.GetStoryWithProjectIdSafetyCheck(new Story
             {
@@ -168,12 +216,16 @@ namespace MarioWebService.Action
                 {
                     Console.WriteLine(ex.ToString());
                 }
-            return count == tasks.Length
-                ? $"<{story.url}|Default tasks added.>"
-                : $"Error addings tasks. <{story.url}|{count} of {tasks.Length} tasks added.>";
+            return new SlackResponse
+            {
+                Text = count == tasks.Length
+                    ? $"<{story.url}|Default tasks added.>"
+                    : $"Error addings tasks. <{story.url}|{count} of {tasks.Length} tasks added.>",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
-        private string AddStory()
+        private SlackResponse AddStory()
         {
             var url = _pivotalClient.PostStory(new Story
             {
@@ -181,16 +233,24 @@ namespace MarioWebService.Action
                 project_id = _channelInfo.PivotalProjectId,
                 tasks = _channelInfo.DefaultTaskDescriptions.Select(d => new Task {description = d}).ToArray()
             }).url;
-            return $"<{url}|New story created.>";
+            return new SlackResponse
+            {
+                Text = $"<{url}|New story created.>",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
-        private string Info()
+        private SlackResponse Info()
         {
-            return $"```{_channelInfo}```";
+            return new SlackResponse
+            {
+                Text = $"```{_channelInfo}```",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
 
         // Fix this
-        public string Help()
+        public SlackResponse Help()
         {
             const string genericHelp = "_All commands are case-insensitive_:\n*help* - Displays command help.\n";
             const string pivotalHelp = @"**Pivotal commands**:
@@ -229,7 +289,11 @@ namespace MarioWebService.Action
                     helpString.AppendLine(kvp.Value);
                 }
             }
-            return helpString.ToString().Trim();
+            return new SlackResponse
+            {
+                Text = helpString.ToString().Trim(),
+                ResponseType = ResponseType.Ephemeral
+            };
         }
     }
 }

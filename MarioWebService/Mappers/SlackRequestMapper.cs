@@ -1,5 +1,6 @@
 ﻿using System;
 using log4net;
+using MarioWebService.Enums;
 using MarioWebService.Models;
 
 namespace MarioWebService.Mappers
@@ -38,7 +39,7 @@ namespace MarioWebService.Mappers
         public SlackRequest Map(OutgoingWebhookRequest outgoingWebhookRequest)
         {
             CommandType commandType;
-            var bParse = Enum.TryParse(outgoingWebhookRequest.trigger_word.Replace(" ", ""), false, out commandType);
+            var bParse = Enum.TryParse(outgoingWebhookRequest.trigger_word.Replace(" ", ""), true, out commandType);
             if (bParse)
                 return new SlackRequest
                 {
