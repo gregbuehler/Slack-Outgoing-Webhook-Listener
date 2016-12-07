@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using MarioWebService.Enums;
 using MarioWebService.Mappers;
-using MarioWebService.Models;
+using Newtonsoft.Json;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 namespace Tests
 {
     [TestFixture]
-
     class JsonSerializationTests
     {
 
         [Test]
-        [TestCase("add tasks 123", "AAA", "thedoors", CommandType.AddTasks, "123")]
-        [TestCase("add tasks #123", "AAA", "thedoors", CommandType.AddTasks, "123")]
-        [TestCase("add tasks     #123  ", "AAA", "thedoors", CommandType.AddTasks, "123")]
-        [TestCase("help", "AAA", "thedoors", CommandType.Help, "")]
-        public void SlashCommandTests(string text, string token, string channel_name, CommandType commandType, string commandText)
+        [TestCase(ResponseType.InChannel, "\"in_channel\"")]
+        [TestCase(ResponseType.Ephemeral, "\"ephemeral\"")]
+        public void ResponseTypeTests(ResponseType responseType, string nameThatSlackExpects)
         {
-            var r = ResponseType.InChannel;
-            var s = JsonConvert
+            var c = new CustomJsonConverter();
+            var s = JsonConvert.SerializeObject(responseType, c);
+            s.ShouldBeEquivalentTo(nameThatSlackExpects);
         }
+
+        //[Test]
+        //public void OutgoingWebhookResponseTests()
     }
 }

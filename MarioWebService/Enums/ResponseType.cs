@@ -1,12 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System.Runtime.Serialization;
 
 namespace MarioWebService.Enums
 {
     public enum ResponseType
     {
-        [Description("in_channel")]
+        [EnumMember(Value = "in_channel")]
         InChannel,
-        [Description("ephemeral")]
+        [EnumMember(Value = "ephemeral")]
         Ephemeral
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System.Web.Http;
+using MarioWebService.Mappers;
+using Newtonsoft.Json;
 
 namespace MarioWebService
 {
@@ -7,6 +9,8 @@ namespace MarioWebService
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new CustomJsonConverter());
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using log4net;
 using MarioWebService.Enums;
+using MarioWebService.Exceptions;
 using MarioWebService.Models;
 
 namespace MarioWebService.Mappers
@@ -21,7 +22,7 @@ namespace MarioWebService.Mappers
             {
                 var description = commandType.GetDescription();
                 var i = slashCommandRequest.text.IndexOf(description, StringComparison.CurrentCultureIgnoreCase);
-                if (i > -1)
+                if (i == 0 && (slashCommandRequest.text.Length == description.Length || slashCommandRequest.text[description.Length] == ' '))
                 {
                     return new SlackRequest
                     {
@@ -32,8 +33,19 @@ namespace MarioWebService.Mappers
                     };
                 }
             }
-            _logger.Error($"Unable to find a command in slash command text\n{slashCommandRequest.text}.");
-            throw new Exception();
+            if (slashCommandRequest.text.Trim() == "")
+            {
+                return new SlackRequest
+                {
+                    CommandType = CommandType.Help,
+                    AuthorizationToken = slashCommandRequest.token,
+                    CommandText = "",
+                    ChannelName = slashCommandRequest.channel_name
+                };
+            }
+            var error = $"Unable to find a command in slash command text\n{slashCommandRequest.text}.";
+            _logger.Error(error);
+            throw new SlackRequestMapException(error);
         }
 
         public SlackRequest Map(OutgoingWebhookRequest outgoingWebhookRequest)
@@ -50,8 +62,9 @@ namespace MarioWebService.Mappers
                     AuthorizationToken = outgoingWebhookRequest.token,
                     ChannelName = outgoingWebhookRequest.channel_name
                 };
-            _logger.Error($"Unable to parse trigger word\n{outgoingWebhookRequest.trigger_word}\ninto a command type.");
-            throw new Exception();
+            var error = $"Unable to parse trigger word\n{outgoingWebhookRequest.trigger_word}\ninto a command type.";
+            _logger.Error(error);
+            throw new SlackRequestMapException(error);
         }
     }
 }

@@ -8,6 +8,7 @@ using ApiIntegrations.Models.Pivotal;
 using MarioWebService.Data;
 using MarioWebService.Enums;
 using MarioWebService.Models;
+using MarioWebService.Validators;
 using Newtonsoft.Json.Linq;
 
 namespace MarioWebService.Action
@@ -28,6 +29,9 @@ namespace MarioWebService.Action
         private readonly YouTubeClient _youTubeClient;
         private SlackChannelInfo _channelInfo;
         private string _formTextContent;
+        private readonly RequestValidator _validator;
+        private const string UnauthorizedResponse = "UNAUTHORIZED LOSER DETECTED";
+
 
         public SlackRequestProcessor()
         {
@@ -63,10 +67,20 @@ namespace MarioWebService.Action
             _googleBooksClient = new GoogleBooksClient();
             _textBeltClient = new TextBeltClient();
             _gitHubClient = new GitHubClient();
+            _validator = new RequestValidator();
         }
 
         public SlackResponse Process(SlackRequest slackRequest)
         {
+            var bAuthorized = _validator.IsAuthorized(slackRequest);
+            if (!bAuthorized)
+            {
+                return new SlackResponse
+                {
+                    Text = UnauthorizedResponse,
+                    ResponseType = ResponseType.Ephemeral
+                };
+            }
             _formTextContent = slackRequest.CommandText;
             _channelInfo = _databaseClient.GetSlackChannelInfo(slackRequest.ChannelName);
             return _triggerWordMap[slackRequest.CommandType]();

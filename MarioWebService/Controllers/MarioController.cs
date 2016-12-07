@@ -1,48 +1,57 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
+using log4net;
 using MarioWebService.Action;
+using MarioWebService.Enums;
 using MarioWebService.Mappers;
 using MarioWebService.Models;
-using MarioWebService.Validators;
 
 namespace MarioWebService.Controllers
 {
     public class MarioController : ApiController
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(MarioController));
         private static readonly SlackRequestProcessor Processor = new SlackRequestProcessor();
-        private static readonly SlackRequestMapper Mapper = new SlackRequestMapper();
-        private static readonly RequestValidator Validator = new RequestValidator();
+        private static readonly SlackRequestMapper RequestMapper = new SlackRequestMapper();
+        private static readonly SlackResponseMapper ResponseMapper = new SlackResponseMapper();
         private const string ExceptionResponse = "SCREAMS OF DEATH";
-        private const string UnauthorizedResponse = "UNAUTHORIZED LOSER DETECTED";
 
         [HttpPost]
-        public string SlashCommand(SlashCommandRequest slashCommandRequest)
+        public SlashCommandResponse SlashCommand(SlashCommandRequest slashCommandRequest)
         {
             try
             {
-                var slackRequest = Mapper.Map(slashCommandRequest);
-                var bAuthorized = Validator.IsAuthorized(slackRequest);
-                return bAuthorized ? Processor.Process(slackRequest) : UnauthorizedResponse;
-                // TODO: Use real authorization that actually returns a 403. And put the auth logic somewhere sensible.
+                var slackRequest = RequestMapper.Map(slashCommandRequest);
+                var slackResponse = Processor.Process(slackRequest);
+                return ResponseMapper.MapToSlashCommandResponse(slackResponse);
             }
-            catch
+            catch (Exception e)
             {
-                return ExceptionResponse;
+                Log.Error("Encountered error while processing slash command.", e);
+                return new SlashCommandResponse
+                {
+                    ResponseType = ResponseType.Ephemeral,
+                    Text = ExceptionResponse
+                };
             }
         }
 
         [HttpPost]
-        public string OutgoingWebhook(OutgoingWebhookRequest outgoingWebhookRequest)
+        public OutgoingWebhookResponse OutgoingWebhook(OutgoingWebhookRequest outgoingWebhookRequest)
         {
             try
             {
-                var slackRequest = Mapper.Map(outgoingWebhookRequest);
-                var bAuthorized = Validator.IsAuthorized(slackRequest);
-                return bAuthorized ? Processor.Process(slackRequest) : UnauthorizedResponse;
-                // TODO: Use real authorization that actually returns a 403. And put the auth logic somewhere sensible.
+                var slackRequest = RequestMapper.Map(outgoingWebhookRequest);
+                var slackResponse = Processor.Process(slackRequest);
+                return ResponseMapper.MapToOutgoingWebhookResponse(slackResponse);
             }
-            catch
+            catch (Exception e)
             {
-                return ExceptionResponse;
+                Log.Error("Encountered error while processing outgoing webhook request.", e);
+                return new OutgoingWebhookResponse
+                {
+                    Text = ExceptionResponse
+                };
             }
         }
     }
