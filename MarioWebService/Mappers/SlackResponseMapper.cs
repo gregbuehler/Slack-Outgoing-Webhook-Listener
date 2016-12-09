@@ -1,4 +1,6 @@
-﻿using MarioWebService.Models;
+﻿using System;
+using System.Linq;
+using MarioWebService.Models;
 
 namespace MarioWebService.Mappers
 {
@@ -14,7 +16,7 @@ namespace MarioWebService.Mappers
         {
             return new SlashCommandResponse
             {
-                Text = slackResponse.Text,
+                Text = slackResponse.SuppressMessageTextOnSlashCommandResponse ? "" : slackResponse.Text,
                 ResponseType = slackResponse.ResponseType,
                 Attachments = slackResponse.Attachments
             };

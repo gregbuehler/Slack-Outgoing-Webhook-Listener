@@ -8,5 +8,6 @@ namespace MarioWebService.Models
         public ResponseType ResponseType { get; set; }
         public string Text { get; set; }
         public List<Attachment> Attachments { get; set; }
+        public bool SuppressMessageTextOnSlashCommandResponse { get; set; }
     }
 }
