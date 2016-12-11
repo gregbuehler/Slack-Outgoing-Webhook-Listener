@@ -68,7 +68,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="JsonSerializationTests.cs" />
+    <Compile Include="CustomJsonConverterTests.cs" />
     <Compile Include="SlackRequestMapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
