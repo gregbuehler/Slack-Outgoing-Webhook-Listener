@@ -11,14 +11,15 @@ namespace Tests
     [TestFixture]
     public class SlackRequestMapperTests
     {
-        public static SlackRequestMapper Mapper = new SlackRequestMapper();
+        private static readonly SlackRequestMapper Mapper = new SlackRequestMapper();
 
         [Test]
         [TestCase("add tasks 123", "AAA", "thedoors", CommandType.AddTasks, "123")]
         [TestCase("add tasks #123", "AAA", "thedoors", CommandType.AddTasks, "123")]
-        [TestCase("add tasks     #123  ", "AAA", "thedoors", CommandType.AddTasks, "123")]
+        [TestCase("add tAsks     #123  ", "AAA", "thedoors", CommandType.AddTasks, "123")]
         [TestCase("help", "AAA", "thedoors", CommandType.Help, "")]
-        [TestCase("", "AAA", "thedoors", CommandType.Help, "")]
+        [TestCase(" ", "AAA", "thedoors", CommandType.Help, "")]
+        [TestCase(null, "AAA", "thedoors", CommandType.Help, "")]
         public void SlashCommandTests(string text, string token, string channel_name, CommandType commandType, string commandText)
         {
             var sc = new SlashCommandRequest

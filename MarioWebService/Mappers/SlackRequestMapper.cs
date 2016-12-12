@@ -3,6 +3,7 @@ using log4net;
 using MarioWebService.Enums;
 using MarioWebService.Exceptions;
 using MarioWebService.Models;
+using Newtonsoft.Json;
 
 namespace MarioWebService.Mappers
 {
@@ -18,22 +19,24 @@ namespace MarioWebService.Mappers
 
         public SlackRequest Map(SlashCommandRequest slashCommandRequest)
         {
+            _logger.Debug(JsonConvert.SerializeObject(slashCommandRequest));
+            var text = slashCommandRequest.text ?? "";
             foreach (CommandType commandType in Enum.GetValues(typeof(CommandType)))
             {
                 var description = commandType.GetDescription();
-                var i = slashCommandRequest.text.IndexOf(description, StringComparison.CurrentCultureIgnoreCase);
-                if (i == 0 && (slashCommandRequest.text.Length == description.Length || slashCommandRequest.text[description.Length] == ' '))
+                var i = text.IndexOf(description, StringComparison.CurrentCultureIgnoreCase);
+                if (i == 0 && (text.Length == description.Length || text[description.Length] == ' '))
                 {
                     return new SlackRequest
                     {
                         CommandType = commandType,
                         AuthorizationToken = slashCommandRequest.token,
-                        CommandText = slashCommandRequest.text.Substring(i + description.Length).Trim(' ', '#', ':', '<', '>'),
+                        CommandText = text.Substring(i + description.Length).Trim(' ', '#', ':', '<', '>'),
                         ChannelName = slashCommandRequest.channel_name
                     };
                 }
             }
-            if (slashCommandRequest.text.Trim() == "")
+            if (text.Trim() == "")
             {
                 return new SlackRequest
                 {
@@ -43,13 +46,14 @@ namespace MarioWebService.Mappers
                     ChannelName = slashCommandRequest.channel_name
                 };
             }
-            var error = $"Unable to find a command in slash command text\n{slashCommandRequest.text}.";
+            var error = $"Unable to find a command in slash command text\n{text}.";
             _logger.Error(error);
             throw new SlackRequestMapException(error);
         }
 
         public SlackRequest Map(OutgoingWebhookRequest outgoingWebhookRequest)
         {
+            _logger.Debug(JsonConvert.SerializeObject(outgoingWebhookRequest));
             CommandType commandType;
             var bParse = Enum.TryParse(outgoingWebhookRequest.trigger_word.Replace(" ", ""), true, out commandType);
             if (bParse)

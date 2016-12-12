@@ -11,6 +11,7 @@ namespace MarioWebService
             GlobalConfiguration.Configure(WebApiConfig.Register);
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new CustomJsonConverter());
             GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            log4net.Config.XmlConfigurator.Configure();
         }
     }
 }
