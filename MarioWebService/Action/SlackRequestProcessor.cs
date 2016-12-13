@@ -156,10 +156,16 @@ namespace MarioWebService.Action
                 };
             }
             var catRes = _catApiClient.GetCats(numCats);
+            var random = new Random();
             return new SlackResponse
             {
                 SuppressMessageTextOnSlashCommandResponse = true,
-                Attachments = catRes.data.images.Select(i => new Attachment {title = "", image_url = i.url}).ToList(),
+                Attachments = catRes.data.images.Select(i => new Attachment
+                {
+                    title = "",
+                    image_url = i.url,
+                    color = $"#{random.Next(0x1000000):X6}"
+                }).ToList(),
                 Text =
                     catRes.data.images.Aggregate("", (s, image) => s + image.url + "\n").Trim(),
                 ResponseType = ResponseType.InChannel
