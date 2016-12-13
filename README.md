@@ -1,6 +1,6 @@
 # Slack-Outgoing-Webhook-Listener
 
-This is a fairly generic Slack integration that supports both [Slash Commands](https://api.slack.com/slash-commands) and [Slack Outgoing Webhook](https://api.slack.com/outgoing-webhooks). It provides rudimentary integration with various APIs, including Pivotal Tracker, YouTube, Imgur, Google Books/Vision, BitLy, Textbelt, the Cat API, and some crappy fractals.
+This is a fairly generic Slack integration that supports both [Slash Commands](https://api.slack.com/slash-commands) and [Slack Outgoing Webhook](https://api.slack.com/outgoing-webhooks). It provides rudimentary integration with various APIs, including Pivotal Tracker, YouTube, Imgur, Google Books/Vision, BitLy, Textbelt, the Cat API, and some crappy fractals. Integrations are powered by the [ApiIntegrations library](https://github.com/DumpsterDoofus/ApiIntegrations).
 
 The primary focus is Pivotal. Pivotal Tracker has no concept of a "story template", and in particular does not have a way of defining "default tasks" for a project (ie, tasks which are always added to a newly-created story, such as development, testing, code reviewing, branch mergers, deploy scheduling, etc.), and this integration allows you to define default tasks and apply them to stories in your queue via a Slack command.
 
