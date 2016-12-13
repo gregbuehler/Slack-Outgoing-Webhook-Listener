@@ -25,8 +25,23 @@ namespace MarioWebService.Controllers
         public SlashCommandResponse SlashCommand(SlashCommandRequest slashCommandRequest)
         {
             Task.Run(() => ProcessSlashCommand(slashCommandRequest));
-            return new SlashCommandResponse();
+            return new SlashCommandResponse
+            {
+                Text = "Response incoming. Only you should see this.",
+                ResponseType = ResponseType.Ephemeral
+            };
         }
+
+        [HttpGet]
+        public SlashCommandResponse SlashCommand()
+        {
+            return new SlashCommandResponse
+            {
+                Text = "Slash Command endpoint is up!",
+                ResponseType = ResponseType.Ephemeral
+            };
+        }
+
 
         [HttpPost]
         public OutgoingWebhookResponse OutgoingWebhook(OutgoingWebhookRequest outgoingWebhookRequest)
@@ -46,6 +61,16 @@ namespace MarioWebService.Controllers
                 };
             }
         }
+
+        [HttpGet]
+        public OutgoingWebhookResponse OutgoingWebhook()
+        {
+            return new OutgoingWebhookResponse
+            {
+                Text = "Outgoing Webhook endpoint is up!"
+            };
+        }
+
 
         private static async Task ProcessSlashCommand(SlashCommandRequest slashCommandRequest)
         {

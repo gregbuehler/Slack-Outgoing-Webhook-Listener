@@ -20,6 +20,7 @@ namespace Tests
         [TestCase("help", "AAA", "thedoors", CommandType.Help, "")]
         [TestCase(" ", "AAA", "thedoors", CommandType.Help, "")]
         [TestCase(null, "AAA", "thedoors", CommandType.Help, "")]
+        [TestCase("google vision http://25.media.tumblr.com/tumblr_lkp44teMYi1qijuhzo1_400.jpg", "AAA", "thedoors", CommandType.GoogleVision, "http://25.media.tumblr.com/tumblr_lkp44teMYi1qijuhzo1_400.jpg")]
         public void SlashCommandTests(string text, string token, string channel_name, CommandType commandType, string commandText)
         {
             var sc = new SlashCommandRequest
