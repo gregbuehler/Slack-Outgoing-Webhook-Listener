@@ -8,6 +8,7 @@ using ApiIntegrations.Clients;
 using ApiIntegrations.Models.Pivotal;
 using MarioWebService.Data;
 using MarioWebService.Enums;
+using MarioWebService.Formatters;
 using MarioWebService.Models;
 using MarioWebService.Validators;
 using Newtonsoft.Json.Linq;
@@ -164,19 +165,13 @@ namespace MarioWebService.Action
                 Attachments = catRes.data.images.Select(i => new Attachment
                 {
                     title = "",
-                    image_url = TweakImageLinks(i.url),
+                    image_url = TumblrFormatter.NormalizeLoadbalancedUrl(i.url),
                     color = $"#{random.Next(0x1000000):X6}"
                 }).ToList(),
                 Text =
                     catRes.data.images.Aggregate("", (s, image) => s + image.url + "\n").Trim(),
                 ResponseType = ResponseType.InChannel
             };
-        }
-
-        private string TweakImageLinks(string rawUrl)
-        {
-            var tumblerRegex = new Regex(@"(\d.*\.)media.tumblr", RegexOptions.IgnoreCase);
-            return tumblerRegex.Replace(rawUrl, "media.tumblr");
         }
 
         private SlackResponse RandomFractal()

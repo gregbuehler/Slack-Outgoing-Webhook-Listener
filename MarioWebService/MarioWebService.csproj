@@ -64,8 +64,10 @@
       <HintPath>..\packages\RavenDB.Client.3.5.1\lib\net45\Raven.Client.Lightweight.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
-    <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -94,6 +96,7 @@
     <Compile Include="Data\RavenDatabaseClient.cs" />
     <Compile Include="Enums\ResponseType.cs" />
     <Compile Include="Exceptions\SlackRequestMapException.cs" />
+    <Compile Include="Formatters\TumblrFormatter.cs" />
     <Compile Include="Mappers\CustomJsonConverter.cs" />
     <Compile Include="Mappers\SlackRequestMapper.cs" />
     <Compile Include="Enums\CommandType.cs" />
