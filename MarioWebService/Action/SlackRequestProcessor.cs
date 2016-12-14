@@ -278,8 +278,7 @@ namespace MarioWebService.Action
                 ResponseType = ResponseType.Ephemeral
             };
         }
-
-        // Fix this
+        
         public SlackResponse Help()
         {
             const string genericHelp = "_All commands are case-insensitive_:\n*help* - Displays command help.\n";

@@ -25,6 +25,7 @@ namespace MarioWebService
                     controller = "Mario"
                 }
             );
+            config.MessageHandlers.Add(new LoggingHandler());
         }
     }
 }

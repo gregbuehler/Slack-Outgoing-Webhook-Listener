@@ -19,6 +19,13 @@ namespace MarioWebService.Controllers
         private static readonly SlackRequestMapper RequestMapper = new SlackRequestMapper();
         private static readonly SlackResponseMapper ResponseMapper = new SlackResponseMapper();
         private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            Formatting = Formatting.Indented
+        };
+
         private const string ExceptionResponse = "SCREAMS OF DEATH";
 
         [HttpPost]
@@ -41,7 +48,6 @@ namespace MarioWebService.Controllers
                 ResponseType = ResponseType.Ephemeral
             };
         }
-
 
         [HttpPost]
         public OutgoingWebhookResponse OutgoingWebhook(OutgoingWebhookRequest outgoingWebhookRequest)
@@ -71,30 +77,29 @@ namespace MarioWebService.Controllers
             };
         }
 
-
         private static async Task ProcessSlashCommand(SlashCommandRequest slashCommandRequest)
         {
+            var slashCommandResponse = new SlashCommandResponse
+            {
+                ResponseType = ResponseType.Ephemeral,
+                Text = ExceptionResponse
+            };
             try
             {
                 var slackRequest = RequestMapper.Map(slashCommandRequest);
                 var slackResponse = Processor.Process(slackRequest);
-                var slashCommandResponse = ResponseMapper.MapToSlashCommandResponse(slackResponse);
-                await HttpClient.PostAsync(slashCommandRequest.response_url,
-                    new StringContent(JsonConvert.SerializeObject(slashCommandResponse))
-                    {
-                        Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
-                    });
+                slashCommandResponse = ResponseMapper.MapToSlashCommandResponse(slackResponse);
             }
             catch (Exception e)
             {
                 Log.Error("Encountered error while processing slash command.", e);
-                var slashCommandResponse = new SlashCommandResponse
-                {
-                    ResponseType = ResponseType.Ephemeral,
-                    Text = ExceptionResponse
-                };
+            }
+            finally
+            {
+                var content = JsonConvert.SerializeObject(slashCommandResponse, JsonSerializerSettings);
+                Log.Debug($"Response to Slack hook: {content}");
                 await HttpClient.PostAsync(slashCommandRequest.response_url,
-                    new StringContent(JsonConvert.SerializeObject(slashCommandResponse))
+                    new StringContent(content)
                     {
                         Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
                     });
