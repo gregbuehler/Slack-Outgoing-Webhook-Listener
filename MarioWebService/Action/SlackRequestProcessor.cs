@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using ApiIntegrations.Clients;
 using ApiIntegrations.Models.Pivotal;
 using MarioWebService.Data;
@@ -163,13 +164,19 @@ namespace MarioWebService.Action
                 Attachments = catRes.data.images.Select(i => new Attachment
                 {
                     title = "",
-                    image_url = i.url,
+                    image_url = TweakImageLinks(i.url),
                     color = $"#{random.Next(0x1000000):X6}"
                 }).ToList(),
                 Text =
                     catRes.data.images.Aggregate("", (s, image) => s + image.url + "\n").Trim(),
                 ResponseType = ResponseType.InChannel
             };
+        }
+
+        private string TweakImageLinks(string rawUrl)
+        {
+            var tumblerRegex = new Regex(@"(\d.*\.)media.tumblr", RegexOptions.IgnoreCase);
+            return tumblerRegex.Replace(rawUrl, "media.tumblr");
         }
 
         private SlackResponse RandomFractal()
