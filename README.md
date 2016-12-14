@@ -63,4 +63,6 @@ help, add story, add tasks, add default task, set default tasks from json, clear
 3. Put your API keys and database connection info in the web.config on your server. Obviously don't commit this to source control, unless you enjoy being hacked like a massive loser.
 4. To check that it's running, use Postman or similar to send a GET request to either the `SlashCommand` or `OutgoingWebhook` endpoints. You should get a healthcheck response. 
 
-If all this works, then you should be good to use the integration.
+If all this works, then you should be good to use the integration. 
+
+Logging is provided by Log4Net's `RollingFileAppender`. The log file path is `./logs/log.log`, and provides fairly noisy logging of requests, responses, and exceptions.
